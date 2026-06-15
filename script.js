@@ -244,16 +244,17 @@ function formatFileSize(bytes) {
 }
 
 // ============================================
-// Image Analysis (Mock AI)
+// Image Analysis (Backend + AI Pipeline)
 // ============================================
+const API_BASE_URL = 'http://localhost:3000';
+
 async function analyzeImage() {
     if (!selectedFile) return;
-    
+
     const analyzeBtn = document.getElementById('analyzeBtn');
     const analyzeText = document.getElementById('analyzeText');
     const analyzeLoading = document.getElementById('analyzeLoading');
-    
-    // Show loading
+
     analyzeBtn.disabled = true;
     analyzeText.style.display = 'none';
     analyzeLoading.style.display = 'flex';
@@ -262,23 +263,41 @@ async function analyzeImage() {
         const formData = new FormData();
         formData.append('image', selectedFile);
 
-        const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/api/scans', {
+        const token = getAuthToken();
+        const endpoint = token
+            ? `${API_BASE_URL}/api/scans`
+            : `${API_BASE_URL}/api/scans/analyze`;
+
+        const response = await fetch(endpoint, {
             method: 'POST',
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
+            headers: token ? getAuthHeaders() : {},
             body: formData,
         });
 
-        const payload = await response.json();
+        let payload;
+        try {
+            payload = await response.json();
+        } catch (_parseError) {
+            throw new Error('Invalid response from analysis server.');
+        }
+
         if (!response.ok) {
             throw new Error(payload.message || 'Analysis failed. Please try again.');
         }
 
-        const diseaseLabel = String(payload.result || '').trim();
+        const isHealthy =
+            payload.is_healthy === true ||
+            String(payload.predicted_class || payload.result || '').toLowerCase().includes('healthy') ||
+            String(payload.disease_name || payload.result || '').toLowerCase().includes('healthy');
+
         const result = {
-            status: diseaseLabel.toLowerCase().includes('healthy') ? 'healthy' : 'diseased',
-            diseaseName: diseaseLabel || 'Unknown',
-            confidence: Number(payload.confidence) || 0,
+            status: isHealthy ? 'healthy' : 'diseased',
+            diseaseName:
+                payload.disease_name ||
+                payload.result ||
+                payload.predicted_class ||
+                'Unknown',
+            confidence: Math.round(Number(payload.confidence) || 0),
             description: payload.symptoms || 'No symptoms details available.',
             treatments: [
                 {
@@ -551,11 +570,10 @@ function toggleFaq(button) {
 // Auth Tabs
 // ============================================
 function switchTab(tab, btn) {
-    // Update tab buttons
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
+    clearAuthMessage();
     
-    // Show/hide forms
     if (tab === 'login') {
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('registerForm').style.display = 'none';
@@ -565,77 +583,195 @@ function switchTab(tab, btn) {
     }
 }
 
-function handleLogin(event) {
-    event.preventDefault();
-    alert('Login functionality will be connected to your backend API.');
+// ============================================
+// Authentication
+// ============================================
+const AUTH_STORAGE_KEYS = ['token', 'userName', 'userEmail', 'userId'];
+
+function getAuthToken() {
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
 }
 
-function handleRegister(event) {
+function getAuthHeaders() {
+    const token = getAuthToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function saveAuthSession(data, remember = true) {
+    const storage = remember ? localStorage : sessionStorage;
+    const otherStorage = remember ? sessionStorage : localStorage;
+
+    AUTH_STORAGE_KEYS.forEach((key) => {
+        otherStorage.removeItem(key);
+    });
+
+    storage.setItem('token', data.token);
+    storage.setItem('userName', data.name);
+    storage.setItem('userEmail', data.email);
+    storage.setItem('userId', data._id);
+}
+
+function clearAuthSession() {
+    AUTH_STORAGE_KEYS.forEach((key) => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+    });
+}
+
+function getCurrentUser() {
+    const token = getAuthToken();
+    if (!token) {
+        return null;
+    }
+
+    return {
+        token,
+        name: localStorage.getItem('userName') || sessionStorage.getItem('userName'),
+        email: localStorage.getItem('userEmail') || sessionStorage.getItem('userEmail'),
+        id: localStorage.getItem('userId') || sessionStorage.getItem('userId'),
+    };
+}
+
+function showAuthMessage(message, type = 'error') {
+    const authMessage = document.getElementById('authMessage');
+    const authMessageText = document.getElementById('authMessageText');
+
+    authMessage.className = `auth-message ${type}`;
+    authMessageText.textContent = message;
+    authMessage.style.display = 'flex';
+}
+
+function clearAuthMessage() {
+    const authMessage = document.getElementById('authMessage');
+    authMessage.style.display = 'none';
+    authMessage.className = 'auth-message';
+}
+
+function updateAuthUI() {
+    const user = getCurrentUser();
+    const authLoggedIn = document.getElementById('authLoggedIn');
+    const authForms = document.getElementById('authForms');
+    const authNavLink = document.getElementById('authNavLink');
+    const authMobileNavLink = document.getElementById('authMobileNavLink');
+
+    if (user) {
+        authLoggedIn.style.display = 'block';
+        authForms.style.display = 'none';
+        document.getElementById('authUserName').textContent = user.name || 'User';
+        document.getElementById('authUserEmail').textContent = user.email || '';
+
+        const navLabel = user.name ? user.name.split(' ')[0] : 'Account';
+        authNavLink.textContent = navLabel;
+        authMobileNavLink.textContent = navLabel;
+        return;
+    }
+
+    authLoggedIn.style.display = 'none';
+    authForms.style.display = 'block';
+    authNavLink.textContent = 'Login';
+    authMobileNavLink.textContent = 'Login';
+}
+
+async function authRequest(endpoint, body) {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
+
+    let payload;
+    try {
+        payload = await response.json();
+    } catch (_parseError) {
+        throw new Error('Invalid response from authentication server.');
+    }
+
+    if (!response.ok) {
+        throw new Error(payload.message || 'Authentication failed.');
+    }
+
+    return payload;
+}
+
+function setAuthLoading(formType, isLoading) {
+    const isLogin = formType === 'login';
+    const submitBtn = document.getElementById(isLogin ? 'loginSubmitBtn' : 'registerSubmitBtn');
+    const submitText = document.getElementById(isLogin ? 'loginSubmitText' : 'registerSubmitText');
+    const submitLoading = document.getElementById(
+        isLogin ? 'loginSubmitLoading' : 'registerSubmitLoading'
+    );
+
+    submitBtn.disabled = isLoading;
+    submitText.style.display = isLoading ? 'none' : 'inline';
+    submitLoading.style.display = isLoading ? 'inline-flex' : 'none';
+}
+
+async function handleLogin(event) {
     event.preventDefault();
-    alert('Registration functionality will be connected to your backend API.');
+    clearAuthMessage();
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const remember = document.getElementById('rememberMe').checked;
+
+    setAuthLoading('login', true);
+
+    try {
+        const data = await authRequest('/api/users/login', { email, password });
+        saveAuthSession(data, remember);
+        updateAuthUI();
+        document.getElementById('loginForm').reset();
+        showAuthMessage('Signed in successfully.', 'success');
+    } catch (error) {
+        showAuthMessage(error.message || 'Login failed. Please try again.');
+    } finally {
+        setAuthLoading('login', false);
+    }
+}
+
+async function handleRegister(event) {
+    event.preventDefault();
+    clearAuthMessage();
+
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+
+    if (password.length < 6) {
+        showAuthMessage('Password must be at least 6 characters.');
+        return;
+    }
+
+    setAuthLoading('register', true);
+
+    try {
+        const data = await authRequest('/api/users/register', { name, email, password });
+        saveAuthSession(data, true);
+        updateAuthUI();
+        document.getElementById('registerForm').reset();
+        showAuthMessage('Account created successfully. You are now signed in.', 'success');
+    } catch (error) {
+        showAuthMessage(error.message || 'Registration failed. Please try again.');
+    } finally {
+        setAuthLoading('register', false);
+    }
+}
+
+function handleLogout() {
+    clearAuthSession();
+    updateAuthUI();
+    showAuthMessage('You have been signed out.', 'success');
 }
 
 function socialLogin(provider) {
-    alert(`${provider} login will be connected to your backend API.`);
+    showAuthMessage(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not available yet.`);
 }
 
 // ============================================
 // Initialize
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Render diseases
     renderDiseases();
-    
-    // Open first FAQ by default
+    updateAuthUI();
     document.querySelector('.faq-item').classList.add('active');
 });
-
-// ============================================
-// Backend API Integration Template
-// ============================================
-/*
-// Replace the mock analyzeImage function with this:
-
-async function analyzeImage() {
-    if (!selectedFile) return;
-    
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const analyzeText = document.getElementById('analyzeText');
-    const analyzeLoading = document.getElementById('analyzeLoading');
-    
-    // Show loading
-    analyzeBtn.disabled = true;
-    analyzeText.style.display = 'none';
-    analyzeLoading.style.display = 'flex';
-    
-    try {
-        const formData = new FormData();
-        formData.append('image', selectedFile);
-        
-        const response = await fetch('https://your-api-endpoint.com/analyze', {
-            method: 'POST',
-            body: formData,
-        });
-        
-        if (!response.ok) {
-            throw new Error('Analysis failed');
-        }
-        
-        const result = await response.json();
-        displayResults(result);
-        
-        document.getElementById('results').style.display = 'block';
-        setTimeout(() => {
-            scrollToSection('results');
-        }, 100);
-        
-    } catch (error) {
-        console.error('Analysis error:', error);
-        showError('Analysis failed. Please try again.');
-    } finally {
-        analyzeText.style.display = 'block';
-        analyzeLoading.style.display = 'none';
-        analyzeBtn.disabled = false;
-    }
-}
-*/

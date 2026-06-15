@@ -23,7 +23,7 @@
                 <a href="#how-it-works" class="nav-link">How It Works</a>
                 <a href="#diseases" class="nav-link">Diseases</a>
                 <a href="#faq" class="nav-link">FAQ</a>
-                <a href="#auth" class="nav-link">Login</a>
+                <a href="#auth" class="nav-link" id="authNavLink">Login</a>
             </nav>
             
             <button class="btn btn-primary btn-small" onclick="scrollToSection('upload')">
@@ -41,7 +41,7 @@
             <a href="#how-it-works" class="mobile-nav-link" onclick="toggleMobileMenu()">How It Works</a>
             <a href="#diseases" class="mobile-nav-link" onclick="toggleMobileMenu()">Diseases</a>
             <a href="#faq" class="mobile-nav-link" onclick="toggleMobileMenu()">FAQ</a>
-            <a href="#auth" class="mobile-nav-link" onclick="toggleMobileMenu()">Login</a>
+            <a href="#auth" class="mobile-nav-link" id="authMobileNavLink" onclick="toggleMobileMenu()">Login</a>
         </div>
     </header>
 
@@ -525,9 +525,24 @@
                 </div>
                 
                 <div class="auth-form">
+                    <div id="authLoggedIn" class="auth-logged-in" style="display: none;">
+                        <div class="auth-logged-in-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <h3 class="form-title">Welcome, <span id="authUserName"></span></h3>
+                        <p class="form-subtitle" id="authUserEmail"></p>
+                        <p class="auth-logged-in-text">You are signed in. Your plant scans can be saved to your account history.</p>
+                        <button type="button" class="btn btn-secondary btn-full" onclick="handleLogout()">Sign Out</button>
+                    </div>
+
+                    <div id="authForms">
                     <div class="auth-tabs">
                         <button class="auth-tab active" onclick="switchTab('login', this)">Login</button>
                         <button class="auth-tab" onclick="switchTab('register', this)">Register</button>
+                    </div>
+
+                    <div id="authMessage" class="auth-message" style="display: none;">
+                        <span id="authMessageText"></span>
                     </div>
                     
                     <!-- Login Form -->
@@ -536,31 +551,35 @@
                         <p class="form-subtitle">Enter your credentials to access your account</p>
                         
                         <div class="form-group">
-                            <label class="form-label">Email Address</label>
+                            <label class="form-label" for="loginEmail">Email Address</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                                <input type="email" class="form-input" placeholder="you@example.com" required>
+                                <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" autocomplete="email" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Password</label>
+                            <label class="form-label" for="loginPassword">Password</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                <input type="password" class="form-input" placeholder="••••••••" required>
+                                <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
                             </div>
                         </div>
                         
                         <div class="form-options">
                             <label class="form-checkbox">
-                                <input type="checkbox">
+                                <input type="checkbox" id="rememberMe">
                                 <span>Remember me</span>
                             </label>
                             <a href="#" class="form-link">Forgot password?</a>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary btn-full">
-                            Sign In
+                        <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-full">
+                            <span id="loginSubmitText">Sign In</span>
+                            <span id="loginSubmitLoading" class="btn-loading" style="display: none;">
+                                <span class="spinner"></span>
+                                Signing in...
+                            </span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
                     </form>
@@ -571,38 +590,42 @@
                         <p class="form-subtitle">Fill in your details to get started</p>
                         
                         <div class="form-group">
-                            <label class="form-label">Full Name</label>
+                            <label class="form-label" for="registerName">Full Name</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <input type="text" class="form-input" placeholder="John Doe" required>
+                                <input type="text" id="registerName" class="form-input" placeholder="John Doe" autocomplete="name" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Email Address</label>
+                            <label class="form-label" for="registerEmail">Email Address</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                                <input type="email" class="form-input" placeholder="you@example.com" required>
+                                <input type="email" id="registerEmail" class="form-input" placeholder="you@example.com" autocomplete="email" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label">Password</label>
+                            <label class="form-label" for="registerPassword">Password</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                <input type="password" class="form-input" placeholder="••••••••" required>
+                                <input type="password" id="registerPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" minlength="6" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-checkbox">
-                                <input type="checkbox" required>
+                                <input type="checkbox" id="registerTerms" required>
                                 <span>I agree to the <a href="#" class="form-link">Terms of Service</a> and <a href="#" class="form-link">Privacy Policy</a></span>
                             </label>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary btn-full">
-                            Create Account
+                        <button type="submit" id="registerSubmitBtn" class="btn btn-primary btn-full">
+                            <span id="registerSubmitText">Create Account</span>
+                            <span id="registerSubmitLoading" class="btn-loading" style="display: none;">
+                                <span class="spinner"></span>
+                                Creating account...
+                            </span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
                     </form>
@@ -621,6 +644,7 @@
                                 GitHub
                             </button>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

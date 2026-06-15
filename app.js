@@ -1,57 +1,70 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const fs = require('fs'); // Added for file system operations
+const fs = require('fs');
 const path = require('path');
 const connectDB = require('./config/db');
 
-// 1. Load environment variables
 dotenv.config();
-
-// 2. Connect to MongoDB
 connectDB();
 
 const app = express();
 
-// 3. INTERNAL DIRECTORY CHECK (Safety Net)
-// Ensure the 'uploads' folder exists for Multer to store images
-const uploadDir = './uploads';
+const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-    console.log('✅ System: "uploads" directory created successfully.');
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log('System: "uploads" directory created successfully.');
 }
 
-// 4. Middleware configuration
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  'http://localhost:8080',
+  'http://127.0.0.1:8080',
+  'null',
+];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use('/uploads', express.static(uploadDir));
 
-// 5. Static Folder (Optional but recommended)
-// Allows viewing uploaded images via browser if needed
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// 6. Mount Routers
 app.use('/api/users', require('./routes/authRoutes'));
 app.use('/api/scans', require('./routes/scanRoutes'));
 
-// Root Route
-app.get('/', (req, res) => {
-    res.send('Plant Scan AI - Backend API is running...');
+app.get('/', (_req, res) => {
+  res.send('Plant Scan AI - Backend API is running...');
 });
 
-// 7. Global Error Handler
 app.use((err, req, res, next) => {
-    const statusCode = res.statusCode ? res.statusCode : 500;
-    res.status(statusCode).json({
-        message: err.message,
-        stack: process.env.NODE_ENV === 'production' ? null : err.stack,
-    });
+  if (err.message && err.message.startsWith('CORS blocked')) {
+    return res.status(403).json({ message: err.message });
+  }
+
+  const statusCode = res.statusCode && res.statusCode !== 200 ? res.statusCode : 500;
+  res.status(statusCode).json({
+    message: err.message || 'Internal server error',
+    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
+  });
 });
 
-// 8. Start Server
-// Using 5000 as a standard port for Node.js
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });
