@@ -10,7 +10,7 @@ const {
 } = require('../utils/diseaseMapper');
 
 const AI_SERVICE_URL =
-  process.env.AI_SERVICE_URL || 'http://127.0.0.1:5001/predict';
+  process.env.AI_SERVICE_URL || 'http://127.0.0.1:5001';
 
 function parseConfidence(value) {
   if (typeof value === 'string') {
