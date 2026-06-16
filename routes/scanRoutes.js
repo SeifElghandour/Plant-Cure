@@ -82,5 +82,6 @@ router.post('/', protect, upload.single('image'), handleMulterError, uploadScan)
  * @access  Private
  */
 router.get('/', protect, getMyScans);
+router.get('/user', protect, getMyScans);
 
 module.exports = router;

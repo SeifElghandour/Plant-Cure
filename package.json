@@ -1,14 +1,22 @@
 {
   "name": "plant-ai-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Plant Health AI System - Graduation Project",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "server": "nodemon app.js",
+    "ai": ".\\venv\\Scripts\\python.exe app.py",
+    "frontend": "npx http-server -p 5500 -c-1 -o",
+    "dev": "concurrently \"npm run server\" \"npm run ai\" \"npm run frontend\""
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "plant",
+    "ai",
+    "health",
+    "machine-learning"
+  ],
+  "author": "Seif Elghandour",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
@@ -22,6 +30,10 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.1",
     "multer": "^2.0.2",
+    "nodemailer": "^9.0.0",
     "nodemon": "^3.1.11"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

@@ -4,3 +4,5 @@ uploads
 /venv/Lib/site-packages/wheel/_commands
 /venv/Lib/site-packages
 /venv
+
+.vercel

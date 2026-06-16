@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Scan AI - Intelligent Plant Disease Detection</title>
+    <title data-i18n="pageTitle">Doctor Plant AI - Intelligent Plant Disease Detection</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Header -->
@@ -15,18 +15,20 @@
                 <div class="logo-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
                 </div>
-                <span class="logo-text">Plant Scan AI</span>
+                <span class="logo-text" data-i18n="brandName">Doctor Plant AI</span>
             </a>
             
             <nav class="nav">
-                <a href="#home" class="nav-link">Home</a>
-                <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="#diseases" class="nav-link">Diseases</a>
-                <a href="#faq" class="nav-link">FAQ</a>
-                <a href="#auth" class="nav-link" id="authNavLink">Login</a>
+                <a href="#home" class="nav-link" data-i18n="navHome">Home</a>
+                <a href="#how-it-works" class="nav-link" data-i18n="navHowItWorks">How It Works</a>
+                <a href="#diseases" class="nav-link" data-i18n="navDiseases">Diseases</a>
+                <a href="#faq" class="nav-link" data-i18n="navFaq">FAQ</a>
+                <a href="#auth" class="nav-link" id="authNavLink" data-i18n="navLogin">Login</a>
             </nav>
+
+            <button type="button" id="langToggle" class="lang-toggle" onclick="toggleLanguage()" aria-label="Toggle language">العربية</button>
             
-            <button class="btn btn-primary btn-small" onclick="scrollToSection('upload')">
+            <button class="btn btn-primary btn-small" onclick="scrollToSection('upload')" data-i18n="navGetStarted">
                 Get Started
             </button>
             
@@ -37,11 +39,11 @@
         
         <!-- Mobile Menu -->
         <div class="mobile-menu" id="mobileMenu">
-            <a href="#home" class="mobile-nav-link" onclick="toggleMobileMenu()">Home</a>
-            <a href="#how-it-works" class="mobile-nav-link" onclick="toggleMobileMenu()">How It Works</a>
-            <a href="#diseases" class="mobile-nav-link" onclick="toggleMobileMenu()">Diseases</a>
-            <a href="#faq" class="mobile-nav-link" onclick="toggleMobileMenu()">FAQ</a>
-            <a href="#auth" class="mobile-nav-link" id="authMobileNavLink" onclick="toggleMobileMenu()">Login</a>
+            <a href="#home" class="mobile-nav-link" onclick="toggleMobileMenu()" data-i18n="navHome">Home</a>
+            <a href="#how-it-works" class="mobile-nav-link" onclick="toggleMobileMenu()" data-i18n="navHowItWorks">How It Works</a>
+            <a href="#diseases" class="mobile-nav-link" onclick="toggleMobileMenu()" data-i18n="navDiseases">Diseases</a>
+            <a href="#faq" class="mobile-nav-link" onclick="toggleMobileMenu()" data-i18n="navFaq">FAQ</a>
+            <a href="#auth" class="mobile-nav-link" id="authMobileNavLink" onclick="toggleMobileMenu()" data-i18n="navLogin">Login</a>
         </div>
     </header>
 
@@ -57,30 +59,29 @@
             <div class="hero-text">
                 <div class="badge">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                    AI-Powered Plant Health Detection
+                    <span data-i18n="heroBadge">AI-Powered Plant Health Detection</span>
                 </div>
                 
                 <h1 class="hero-title">
-                    Detect Plant
-                    <span class="gradient-text">Diseases Instantly</span>
+                    <span data-i18n="heroTitle">Detect Plant Diseases Instantly</span>
                 </h1>
                 
-                <p class="hero-description">
+                <p class="hero-description" data-i18n="heroDescription">
                     Upload a photo of your plant leaf and our AI will analyze it to detect diseases and provide treatment recommendations in seconds.
                 </p>
                 
                 <div class="hero-features">
                     <div class="hero-feature">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        99% Accuracy
+                        <span data-i18n="heroFeature1">99% Accuracy</span>
                     </div>
                     <div class="hero-feature">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-                        50+ Diseases
+                        <span data-i18n="heroFeature2">38+ Diseases</span>
                     </div>
                     <div class="hero-feature">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                        Instant Results
+                        <span data-i18n="heroFeature3">Instant Results</span>
                     </div>
                 </div>
             </div>
@@ -91,8 +92,8 @@
                     <div class="upload-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     </div>
-                    <h3 class="upload-title">Upload Plant Image</h3>
-                    <p class="upload-subtitle">Supported formats: JPG, PNG, GIF (max 10MB)</p>
+                    <h3 class="upload-title" data-i18n="uploadTitle">Upload Plant Image</h3>
+                    <p class="upload-subtitle" data-i18n="uploadSubtitle">Supported formats: JPG, PNG, GIF (max 10MB)</p>
                 </div>
                 
                 <!-- Upload Zone -->
@@ -103,9 +104,9 @@
                         <div class="upload-zone-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                         </div>
-                        <p class="upload-zone-text">Drag & drop your image here</p>
-                        <p class="upload-zone-subtext">or click to browse files</p>
-                        <button class="btn btn-primary btn-small">Select Image</button>
+                        <p class="upload-zone-text" data-i18n="uploadZoneText">Drag & drop your image here</p>
+                        <p class="upload-zone-subtext" data-i18n="uploadZoneSubtext">or click to browse files</p>
+                        <button type="button" class="btn btn-primary btn-small" data-i18n="selectImageBtn">Select Image</button>
                     </div>
                     
                     <!-- Preview (hidden initially) -->
@@ -137,10 +138,10 @@
                 
                 <!-- Analyze Button -->
                 <button id="analyzeBtn" class="btn btn-primary btn-full" onclick="analyzeImage()" disabled>
-                    <span id="analyzeText">Analyze Plant</span>
+                    <span id="analyzeText" data-i18n="analyzeBtn">Analyze Plant</span>
                     <span id="analyzeLoading" style="display: none;">
                         <span class="spinner"></span>
-                        Analyzing...
+                        <span data-i18n="analyzingText">Analyzing...</span>
                     </span>
                 </button>
             </div>
@@ -153,10 +154,10 @@
             <div class="section-header">
                 <div class="badge badge-green">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                    Analysis Results
+                    <span data-i18n="analysisResults">Analysis Results</span>
                 </div>
-                <h2 class="section-title">Your Plant Health Report</h2>
-                <p class="section-description">Based on our AI analysis of your uploaded image, here are the detailed results and recommendations.</p>
+                <h2 class="section-title" data-i18n="resultsTitle">Your Plant Health Report</h2>
+                <p class="section-description" data-i18n="resultsDescription">Based on our AI analysis of your uploaded image, here are the detailed results and recommendations.</p>
             </div>
             
             <div class="results-content">
@@ -173,7 +174,7 @@
                     </div>
                     
                     <div id="diseaseNameSection" style="display: none;">
-                        <p class="result-label">Detected Condition</p>
+                        <p class="result-label" data-i18n="detectedCondition">Detected Condition</p>
                         <h3 class="result-disease-name" id="diseaseName">Leaf Spot Disease</h3>
                     </div>
                     
@@ -183,7 +184,7 @@
                     
                     <div class="confidence-bar">
                         <div class="confidence-bar-header">
-                            <span class="confidence-label">Analysis Confidence</span>
+                            <span class="confidence-label" data-i18n="analysisConfidence">Analysis Confidence</span>
                             <span class="confidence-value" id="confidenceValue">97%</span>
                         </div>
                         <div class="progress-bar">
@@ -197,7 +198,7 @@
             <div class="treatments-section" id="treatmentsSection">
                 <h3 class="subsection-title">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg>
-                    Recommended Treatments
+                    <span data-i18n="recommendedTreatments">Recommended Treatments</span>
                 </h3>
                 <div class="treatments-grid" id="treatmentsGrid">
                     <!-- Treatments will be inserted here by JS -->
@@ -208,7 +209,7 @@
             <div class="prevention-section" id="preventionSection">
                 <h3 class="subsection-title">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7"/><path d="M14.1 6a7 7 0 0 0-6.2 3.8"/><path d="M16.3 11.5c.9 1.2.3 2.8-.8 3.6"/><path d="M18.7 9.2a6.7 6.7 0 0 0-5.8 4.5"/></svg>
-                    Prevention Tips
+                    <span data-i18n="preventionTips">Prevention Tips</span>
                 </h3>
                 <div class="prevention-grid" id="preventionGrid">
                     <!-- Prevention tips will be inserted here by JS -->
@@ -219,7 +220,7 @@
             <div class="results-cta">
                 <button class="btn btn-primary" onclick="scrollToSection('upload'); resetUpload();">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-                    Scan Another Plant
+                    <span data-i18n="scanAnotherPlant">Scan Another Plant</span>
                 </button>
             </div>
         </div>
@@ -231,10 +232,10 @@
             <div class="section-header">
                 <div class="badge badge-green">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                    Simple Process
+                    <span data-i18n="hiwBadge">Simple Process</span>
                 </div>
-                <h2 class="section-title">How It <span class="gradient-text">Works</span></h2>
-                <p class="section-description">Detecting plant diseases has never been easier. Follow these simple steps to get instant AI-powered analysis.</p>
+                <h2 class="section-title" data-i18n="hiwTitle">How It Works</h2>
+                <p class="section-description" data-i18n="hiwDescription">Detecting plant diseases has never been easier. Follow these simple steps to get instant AI-powered analysis.</p>
             </div>
             
             <div class="steps-grid">
@@ -243,8 +244,8 @@
                     <div class="step-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                     </div>
-                    <h3 class="step-title">Upload Image</h3>
-                    <p class="step-description">Take a clear photo of your plant leaf and upload it. Our system accepts JPG, PNG, and GIF formats up to 10MB.</p>
+                    <h3 class="step-title" data-i18n="step1Title">Upload Image</h3>
+                    <p class="step-description" data-i18n="step1Desc">Take a clear photo of your plant leaf and upload it. Our system accepts JPG, PNG, and GIF formats up to 10MB.</p>
                 </div>
                 
                 <div class="step-card">
@@ -252,8 +253,8 @@
                     <div class="step-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></svg>
                     </div>
-                    <h3 class="step-title">AI Analysis</h3>
-                    <p class="step-description">Our advanced AI model analyzes your image, comparing it against millions of plant disease patterns in seconds.</p>
+                    <h3 class="step-title" data-i18n="step2Title">AI Analysis</h3>
+                    <p class="step-description" data-i18n="step2Desc">Doctor Plant AI analyzes your image, comparing it against thousands of plant disease patterns in seconds.</p>
                 </div>
                 
                 <div class="step-card">
@@ -261,8 +262,8 @@
                     <div class="step-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
                     </div>
-                    <h3 class="step-title">Get Results</h3>
-                    <p class="step-description">Receive a detailed health report with disease identification, confidence score, and personalized treatment recommendations.</p>
+                    <h3 class="step-title" data-i18n="step3Title">Get Results</h3>
+                    <p class="step-description" data-i18n="step3Desc">Receive a detailed health report with disease identification, confidence score, and personalized treatment recommendations.</p>
                 </div>
                 
                 <div class="step-card">
@@ -270,14 +271,14 @@
                     <div class="step-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
-                    <h3 class="step-title">Treat & Prevent</h3>
-                    <p class="step-description">Follow our expert guidance to treat the issue and prevent future problems. Track your plant's recovery over time.</p>
+                    <h3 class="step-title" data-i18n="step4Title">Treat & Prevent</h3>
+                    <p class="step-description" data-i18n="step4Desc">Follow expert guidance to treat the issue and prevent future problems. Track your plant recovery over time.</p>
                 </div>
             </div>
             
             <div class="section-cta">
-                <button class="btn btn-primary" onclick="scrollToSection('upload')">
-                    Start Analyzing Now
+                <button type="button" class="btn btn-primary" onclick="scrollToSection('upload')">
+                    <span data-i18n="startAnalyzingNow">Start Analyzing Now</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </button>
             </div>
@@ -290,31 +291,33 @@
             <div class="section-header">
                 <div class="badge badge-green">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    Plant Health Database
+                    <span data-i18n="diseasesBadge">Plant Health Database</span>
                 </div>
-                <h2 class="section-title">Common Plant <span class="gradient-text">Diseases</span></h2>
-                <p class="section-description">Browse our comprehensive database of plant diseases and pests. Learn to identify symptoms and find effective treatments.</p>
+                <h2 class="section-title" data-i18n="diseasesTitle">Common Plant Diseases</h2>
+                <p class="section-description" data-i18n="diseasesDescription">Browse our comprehensive database of plant diseases and pests. Learn to identify symptoms and find effective treatments.</p>
             </div>
             
             <!-- Search & Filter -->
             <div class="search-filter">
                 <div class="search-box">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <input type="text" id="diseaseSearch" placeholder="Search diseases or plants..." onkeyup="filterDiseases()">
+                    <input type="text" id="diseaseSearch" placeholder="Search diseases or plants..." data-i18n-placeholder="diseaseSearchPlaceholder" onkeyup="filterDiseases()">
                 </div>
                 <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
-                    <button class="filter-btn" onclick="setFilter('fungal', this)">Fungal</button>
-                    <button class="filter-btn" onclick="setFilter('bacterial', this)">Bacterial</button>
-                    <button class="filter-btn" onclick="setFilter('viral', this)">Viral</button>
-                    <button class="filter-btn" onclick="setFilter('pest', this)">Pests</button>
+                    <button class="filter-btn active" onclick="setFilter('all', this)" data-i18n="filterAll">All</button>
+                    <button class="filter-btn" onclick="setFilter('fungal', this)" data-i18n="filterFungal">Fungal</button>
+                    <button class="filter-btn" onclick="setFilter('bacterial', this)" data-i18n="filterBacterial">Bacterial</button>
+                    <button class="filter-btn" onclick="setFilter('viral', this)" data-i18n="filterViral">Viral</button>
+                    <button class="filter-btn" onclick="setFilter('pest', this)" data-i18n="filterPests">Pests</button>
+                    <button class="filter-btn" onclick="setFilter('healthy', this)" data-i18n="filterHealthy">Healthy</button>
                 </div>
             </div>
             
             <!-- Diseases Grid -->
-            <div class="diseases-grid" id="diseasesGrid">
-                <!-- Diseases will be populated by JavaScript -->
-            </div>
+            <div class="diseases-grid" id="diseasesContainer"></div>
+            <button type="button" id="showMoreDiseases" class="btn btn-secondary show-more-diseases" onclick="showMoreDiseases()" style="display: none;" data-i18n="showMore">
+                Show More
+            </button>
         </div>
     </section>
 
@@ -324,10 +327,10 @@
             <div class="section-header">
                 <div class="badge badge-green">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                    Why Choose Us
+                    <span data-i18n="featuresBadge">Why Choose Us</span>
                 </div>
-                <h2 class="section-title">Powerful Features for <span class="gradient-text">Plant Health Detection</span></h2>
-                <p class="section-description">Our AI-powered platform combines cutting-edge technology with extensive plant knowledge to deliver accurate and actionable insights.</p>
+                <h2 class="section-title" data-i18n="featuresTitle">Powerful Features for Plant Health Detection</h2>
+                <p class="section-description" data-i18n="featuresDescription">Doctor Plant AI combines cutting-edge technology with extensive plant knowledge to deliver accurate and actionable insights.</p>
             </div>
             
             <div class="features-grid">
@@ -335,48 +338,48 @@
                     <div class="feature-icon-box" style="background: linear-gradient(135deg, #2d8a6b, #4db88a);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.97-3.465"/><path d="M19.97 14.535A4 4 0 0 1 18 18"/></svg>
                     </div>
-                    <h3 class="feature-title">AI-Powered Detection</h3>
-                    <p class="feature-description">Our advanced machine learning model has been trained on millions of plant images to accurately identify diseases.</p>
+                    <h3 class="feature-title" data-i18n="feature1Title">AI-Powered Detection</h3>
+                    <p class="feature-description" data-i18n="feature1Desc">Our advanced machine learning model has been trained on millions of plant images to accurately identify diseases.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon-box" style="background: linear-gradient(135deg, #f4d03f, #f9e79f);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8b6914" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                     </div>
-                    <h3 class="feature-title">Instant Results</h3>
-                    <p class="feature-description">Get comprehensive analysis results within seconds. No waiting, no complicated processes.</p>
+                    <h3 class="feature-title" data-i18n="feature2Title">Instant Results</h3>
+                    <p class="feature-description" data-i18n="feature2Desc">Get comprehensive analysis results within seconds. No waiting, no complicated processes.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon-box" style="background: linear-gradient(135deg, #9b59b6, #bb8fce);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
                     </div>
-                    <h3 class="feature-title">50+ Diseases</h3>
-                    <p class="feature-description">Our database covers a wide range of plant diseases affecting vegetables, fruits, flowers, and crops.</p>
+                    <h3 class="feature-title" data-i18n="feature3Title">38+ Diseases</h3>
+                    <p class="feature-description" data-i18n="feature3Desc">Our database covers a wide range of plant diseases affecting vegetables, fruits, flowers, and crops.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon-box" style="background: linear-gradient(135deg, #27ae60, #58d68d);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
                     </div>
-                    <h3 class="feature-title">Treatment Guidance</h3>
-                    <p class="feature-description">Receive personalized treatment recommendations and prevention tips for your plants.</p>
+                    <h3 class="feature-title" data-i18n="feature4Title">Treatment Guidance</h3>
+                    <p class="feature-description" data-i18n="feature4Desc">Receive personalized treatment recommendations and prevention tips for your plants.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon-box" style="background: linear-gradient(135deg, #3498db, #85c1e9);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/></svg>
                     </div>
-                    <h3 class="feature-title">High Accuracy</h3>
-                    <p class="feature-description">Our model achieves over 99% accuracy in disease detection, continuously improving.</p>
+                    <h3 class="feature-title" data-i18n="feature5Title">High Accuracy</h3>
+                    <p class="feature-description" data-i18n="feature5Desc">Our model achieves over 99% accuracy in disease detection, continuously improving.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon-box" style="background: linear-gradient(135deg, #e67e22, #f5b041);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                     </div>
-                    <h3 class="feature-title">Universal Support</h3>
-                    <p class="feature-description">Works with any plant type - from houseplants to agricultural crops.</p>
+                    <h3 class="feature-title" data-i18n="feature6Title">Universal Support</h3>
+                    <p class="feature-description" data-i18n="feature6Desc">Works with any plant type — from houseplants to agricultural crops.</p>
                 </div>
             </div>
             
@@ -384,19 +387,19 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-value">99%</div>
-                    <div class="stat-label">Accuracy Rate</div>
+                    <div class="stat-label" data-i18n="statAccuracy">Accuracy Rate</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value">50+</div>
-                    <div class="stat-label">Diseases Detected</div>
+                    <div class="stat-value">38+</div>
+                    <div class="stat-label" data-i18n="statDiseases">Diseases Detected</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">1M+</div>
-                    <div class="stat-label">Images Analyzed</div>
+                    <div class="stat-label" data-i18n="statImages">Images Analyzed</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">24/7</div>
-                    <div class="stat-label">AI Support</div>
+                    <div class="stat-label" data-i18n="statSupport">AI Support</div>
                 </div>
             </div>
         </div>
@@ -408,82 +411,82 @@
             <div class="section-header">
                 <div class="badge badge-green">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-                    Got Questions?
+                    <span data-i18n="faqBadge">Got Questions?</span>
                 </div>
-                <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
-                <p class="section-description">Find answers to common questions about Plant Scan AI, our technology, and how to get the most out of our plant health detection service.</p>
+                <h2 class="section-title" data-i18n="faqTitle">Frequently Asked Questions</h2>
+                <p class="section-description" data-i18n="faqDescription">Find answers to common questions about Doctor Plant AI, our technology, and how to get the most out of our plant health detection service.</p>
             </div>
             
             <div class="faq-list">
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>How accurate is the AI plant disease detection?</span>
+                        <span data-i18n="faqQ1">How accurate is the AI plant disease detection?</span>
                         <div class="faq-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                     </button>
                     <div class="faq-answer">
-                        <p>Our AI model has been trained on over 1 million plant images and achieves an accuracy rate of 99% for common plant diseases. The model continuously learns and improves with each new analysis.</p>
+                        <p data-i18n="faqA1">Doctor Plant AI has been trained on over 1 million plant images and achieves an accuracy rate of 99% for common plant diseases. The model continuously learns and improves with each new analysis.</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>What types of plants can I analyze?</span>
+                        <span data-i18n="faqQ2">What types of plants can I analyze?</span>
                         <div class="faq-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                     </button>
                     <div class="faq-answer">
-                        <p>Plant Scan AI supports a wide variety of plants including vegetables, fruits, flowers, ornamental plants, and agricultural crops. Our database covers over 50 different plant species and their common diseases.</p>
+                        <p data-i18n="faqA2">Doctor Plant AI supports a wide variety of plants including vegetables, fruits, flowers, ornamental plants, and agricultural crops. Our database covers 38+ plant diseases across multiple species.</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>What image formats are supported?</span>
+                        <span data-i18n="faqQ3">What image formats are supported?</span>
                         <div class="faq-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                     </button>
                     <div class="faq-answer">
-                        <p>We support JPG, JPEG, PNG, and GIF formats. The maximum file size is 10MB. For best results, we recommend using clear, well-lit photos that focus on the affected area of the plant.</p>
+                        <p data-i18n="faqA3">We support JPG, JPEG, PNG, and GIF formats. The maximum file size is 10MB. For best results, use clear, well-lit photos focused on the affected area of the plant.</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>How long does the analysis take?</span>
+                        <span data-i18n="faqQ4">How long does the analysis take?</span>
                         <div class="faq-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                     </button>
                     <div class="faq-answer">
-                        <p>Most analyses are completed within 2-3 seconds. The exact time may vary depending on your internet connection and image size, but our AI works incredibly fast to give you instant results.</p>
+                        <p data-i18n="faqA4">Most analyses are completed within 2–3 seconds. The exact time may vary depending on your internet connection and image size, but our AI delivers results almost instantly.</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>Is my uploaded data secure?</span>
+                        <span data-i18n="faqQ5">Is my uploaded data secure?</span>
                         <div class="faq-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                     </button>
                     <div class="faq-answer">
-                        <p>Yes, absolutely. We take privacy seriously. Your uploaded images are processed securely and are not shared with third parties. Images are stored temporarily for analysis and can be deleted from your account at any time.</p>
+                        <p data-i18n="faqA5">Yes, absolutely. We take privacy seriously. Your uploaded images are processed securely and are not shared with third parties. Images are stored temporarily for analysis and can be deleted from your account at any time.</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
-                        <span>Can I save my analysis history?</span>
+                        <span data-i18n="faqQ6">Can I save my analysis history?</span>
                         <div class="faq-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                         </div>
                     </button>
                     <div class="faq-answer">
-                        <p>Yes! By creating a free account, you can save unlimited plant analyses, track your plant health over time, and access personalized care recommendations based on your history.</p>
+                        <p data-i18n="faqA6">Yes! By creating a free account, you can save unlimited plant analyses, track your plant health over time, and access personalized care recommendations based on your history.</p>
                     </div>
                 </div>
             </div>
@@ -494,11 +497,11 @@
                     <div class="faq-cta-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
                     </div>
-                    <h3 class="faq-cta-title">Still have questions?</h3>
-                    <p class="faq-cta-text">Can't find the answer you're looking for? Our team is here to help.</p>
+                    <h3 class="faq-cta-title" data-i18n="faqCtaTitle">Still have questions?</h3>
+                    <p class="faq-cta-text" data-i18n="faqCtaText">Can't find the answer you're looking for? Our team is here to help.</p>
                     <div class="faq-cta-buttons">
-                        <a href="mailto:support@plantscanai.com" class="btn btn-primary">Contact Support</a>
-                        <button class="btn btn-secondary" onclick="scrollToSection('auth')">Create Account</button>
+                        <a href="mailto:doctor.plant.ai.system@gmail.com" class="btn btn-primary" data-i18n="contactSupport">Contact Support</a>
+                        <button class="btn btn-secondary" onclick="scrollToSection('auth')" data-i18n="createAccount">Create Account</button>
                     </div>
                 </div>
             </div>
@@ -513,14 +516,14 @@
                     <div class="auth-info-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
                     </div>
-                    <h3 class="auth-info-title">Welcome Back!</h3>
-                    <p class="auth-info-text">Sign in to access your plant health history, saved analyses, and personalized recommendations.</p>
+                    <h3 class="auth-info-title" data-i18n="authInfoTitle">Welcome Back!</h3>
+                    <p class="auth-info-text" data-i18n="authInfoText">Sign in to access your plant health history, saved analyses, and personalized recommendations.</p>
                     
                     <ul class="auth-features">
-                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Save unlimited plant analyses</li>
-                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Track plant health over time</li>
-                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Get personalized recommendations</li>
-                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Access exclusive care guides</li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> <span data-i18n="authFeature1">Save unlimited plant analyses</span></li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> <span data-i18n="authFeature2">Track plant health over time</span></li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> <span data-i18n="authFeature3">Get personalized recommendations</span></li>
+                        <li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> <span data-i18n="authFeature4">Access exclusive care guides</span></li>
                     </ul>
                 </div>
                 
@@ -529,16 +532,16 @@
                         <div class="auth-logged-in-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         </div>
-                        <h3 class="form-title">Welcome, <span id="authUserName"></span></h3>
+                        <h3 class="form-title"><span data-i18n="welcomePrefix">Welcome,</span> <span id="authUserName"></span></h3>
                         <p class="form-subtitle" id="authUserEmail"></p>
-                        <p class="auth-logged-in-text">You are signed in. Your plant scans can be saved to your account history.</p>
-                        <button type="button" class="btn btn-secondary btn-full" onclick="handleLogout()">Sign Out</button>
+                        <p class="auth-logged-in-text" data-i18n="authLoggedInText">You are signed in. Your plant scans can be saved to your account history.</p>
+                        <button type="button" class="btn btn-secondary btn-full" onclick="handleLogout()" data-i18n="signOut">Sign Out</button>
                     </div>
 
                     <div id="authForms">
                     <div class="auth-tabs">
-                        <button class="auth-tab active" onclick="switchTab('login', this)">Login</button>
-                        <button class="auth-tab" onclick="switchTab('register', this)">Register</button>
+                        <button type="button" class="auth-tab active" onclick="switchTab('login', this)" data-i18n="authTabLogin">Login</button>
+                        <button type="button" class="auth-tab" onclick="switchTab('register', this)" data-i18n="authTabRegister">Register</button>
                     </div>
 
                     <div id="authMessage" class="auth-message" style="display: none;">
@@ -547,38 +550,42 @@
                     
                     <!-- Login Form -->
                     <form id="loginForm" class="form" onsubmit="handleLogin(event)">
-                        <h3 class="form-title">Sign in to your account</h3>
-                        <p class="form-subtitle">Enter your credentials to access your account</p>
+                        <h3 class="form-title" data-i18n="loginFormTitle">Sign in to your account</h3>
+                        <p class="form-subtitle" data-i18n="loginFormSubtitle">Enter your credentials to access your account</p>
                         
                         <div class="form-group">
-                            <label class="form-label" for="loginEmail">Email Address</label>
+                            <label class="form-label" for="loginEmail" data-i18n="labelEmail">Email Address</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                                <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+                                <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" data-i18n-placeholder="placeholderEmail" autocomplete="email" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="loginPassword">Password</label>
-                            <div class="form-input-wrapper">
+                            <label class="form-label" for="loginPassword" data-i18n="labelPassword">Password</label>
+                            <div class="form-input-wrapper password-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+                                <input type="password" id="loginPassword" class="form-input password-input" placeholder="••••••••" data-i18n-placeholder="placeholderPassword" autocomplete="current-password" required>
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('loginPassword')" aria-label="Show password">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-off-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
                             </div>
                         </div>
                         
                         <div class="form-options">
                             <label class="form-checkbox">
                                 <input type="checkbox" id="rememberMe">
-                                <span>Remember me</span>
+                                <span data-i18n="rememberMe">Remember me</span>
                             </label>
-                            <a href="#" class="form-link">Forgot password?</a>
+                            <a href="#" class="form-link" data-i18n="forgotPassword">Forgot password?</a>
                         </div>
                         
                         <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-full">
-                            <span id="loginSubmitText">Sign In</span>
+                            <span id="loginSubmitText" data-i18n="signIn">Sign In</span>
                             <span id="loginSubmitLoading" class="btn-loading" style="display: none;">
                                 <span class="spinner"></span>
-                                Signing in...
+                                <span data-i18n="signingIn">Signing in...</span>
                             </span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
@@ -586,50 +593,55 @@
                     
                     <!-- Register Form -->
                     <form id="registerForm" class="form" style="display: none;" onsubmit="handleRegister(event)">
-                        <h3 class="form-title">Create your account</h3>
-                        <p class="form-subtitle">Fill in your details to get started</p>
+                        <h3 class="form-title" data-i18n="registerFormTitle">Create your account</h3>
+                        <p class="form-subtitle" data-i18n="registerFormSubtitle">Fill in your details to get started</p>
                         
                         <div class="form-group">
-                            <label class="form-label" for="registerName">Full Name</label>
+                            <label class="form-label" for="registerName" data-i18n="labelFullName">Full Name</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                <input type="text" id="registerName" class="form-input" placeholder="John Doe" autocomplete="name" required>
+                                <input type="text" id="registerName" class="form-input" placeholder="John Doe" data-i18n-placeholder="placeholderName" autocomplete="name" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="registerEmail">Email Address</label>
+                            <label class="form-label" for="registerEmail" data-i18n="labelEmail">Email Address</label>
                             <div class="form-input-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                                <input type="email" id="registerEmail" class="form-input" placeholder="you@example.com" autocomplete="email" required>
+                                <input type="email" id="registerEmail" class="form-input" placeholder="you@example.com" data-i18n-placeholder="placeholderEmail" autocomplete="email" required>
                             </div>
                         </div>
                         
                         <div class="form-group">
-                            <label class="form-label" for="registerPassword">Password</label>
-                            <div class="form-input-wrapper">
+                            <label class="form-label" for="registerPassword" data-i18n="labelPassword">Password</label>
+                            <div class="form-input-wrapper password-wrapper">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                <input type="password" id="registerPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" minlength="6" required>
+                                <input type="password" id="registerPassword" class="form-input password-input" placeholder="••••••••" data-i18n-placeholder="placeholderPassword" autocomplete="new-password" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}" title="Password must be at least 8 characters and include uppercase, lowercase, number, and special character (@$!%*?&)." required>
+                                <button type="button" class="password-toggle" onclick="togglePasswordVisibility('registerPassword')" aria-label="Show password">
+                                    <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-off-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label class="form-checkbox">
                                 <input type="checkbox" id="registerTerms" required>
-                                <span>I agree to the <a href="#" class="form-link">Terms of Service</a> and <a href="#" class="form-link">Privacy Policy</a></span>
+                                <span data-i18n="registerTerms">I agree to the Terms of Service and Privacy Policy</span>
                             </label>
                         </div>
                         
                         <button type="submit" id="registerSubmitBtn" class="btn btn-primary btn-full">
-                            <span id="registerSubmitText">Create Account</span>
+                            <span id="registerSubmitText" data-i18n="createAccountBtn">Create Account</span>
                             <span id="registerSubmitLoading" class="btn-loading" style="display: none;">
                                 <span class="spinner"></span>
-                                Creating account...
+                                <span data-i18n="creatingAccount">Creating account...</span>
                             </span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
                     </form>
                     
+                    <!-- OAuth not configured yet
                     <div class="social-login">
                         <div class="social-divider">
                             <span>or continue with</span>
@@ -645,9 +657,20 @@
                             </button>
                         </div>
                     </div>
+                    -->
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Scan History (logged-in users) -->
+    <section class="history" id="history" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="historyTitle">Your Scan History</h2>
+            </div>
+            <div id="historyContainer" class="history-container"></div>
         </div>
     </section>
 
@@ -660,9 +683,9 @@
                         <div class="logo-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
                         </div>
-                        <span class="footer-logo-text">Plant Scan AI</span>
+                        <span class="footer-logo-text" data-i18n="brandName">Doctor Plant AI</span>
                     </a>
-                    <p class="footer-description">AI-powered plant disease detection helping gardeners and farmers identify and treat plant health issues instantly.</p>
+                    <p class="footer-description" data-i18n="footerDescription">AI-powered plant disease detection helping gardeners and farmers identify and treat plant health issues instantly.</p>
                     <div class="social-links">
                         <a href="#" class="social-link" aria-label="Twitter">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
@@ -680,47 +703,47 @@
                 </div>
                 
                 <div class="footer-links">
-                    <h4 class="footer-title">Quick Links</h4>
+                    <h4 class="footer-title" data-i18n="footerQuickLinks">Quick Links</h4>
                     <ul>
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#upload">Upload</a></li>
-                        <li><a href="#results">Results</a></li>
-                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#home" data-i18n="footerLinkHome">Home</a></li>
+                        <li><a href="#upload" data-i18n="footerLinkUpload">Upload</a></li>
+                        <li><a href="#results" data-i18n="footerLinkResults">Results</a></li>
+                        <li><a href="#how-it-works" data-i18n="footerLinkHowItWorks">How It Works</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-links">
-                    <h4 class="footer-title">Resources</h4>
+                    <h4 class="footer-title" data-i18n="footerResources">Resources</h4>
                     <ul>
-                        <li><a href="#diseases">Plant Database</a></li>
-                        <li><a href="#diseases">Disease Guide</a></li>
-                        <li><a href="#faq">Care Tips</a></li>
-                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#diseases" data-i18n="footerLinkDatabase">Plant Database</a></li>
+                        <li><a href="#diseases" data-i18n="footerLinkGuide">Disease Guide</a></li>
+                        <li><a href="#faq" data-i18n="footerLinkCareTips">Care Tips</a></li>
+                        <li><a href="#" data-i18n="footerLinkApi">API Documentation</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-contact">
-                    <h4 class="footer-title">Contact Us</h4>
+                    <h4 class="footer-title" data-i18n="footerContact">Contact Us</h4>
                     <ul>
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                            support@plantscanai.com
+                            <span data-i18n="footerEmail">doctor.plant.ai.system@gmail.com</span>
                         </li>
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                            +1 (555) 123-4567
+                            <span data-i18n="footerPhone">+20 100 123 4567</span>
                         </li>
                         <li>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                            123 Green Street<br>San Francisco, CA 94102
+                            <span data-i18n="footerAddress">New Cairo, Egypt</span>
                         </li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>Made with ❤️ by Plant Scan AI Team</p>
-                <p>&copy; 2024 Plant Scan AI. All rights reserved.</p>
+                <p data-i18n="footerMadeWith">Made with ❤️ by Doctor Plant AI Team</p>
+                <p data-i18n="footerCopyright">© 2026 Doctor Plant AI. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -740,6 +763,12 @@
         </div>
     </div>
 
+    <div id="toast" class="toast toast-success" style="display: none;" role="status" aria-live="polite">
+        <span id="toastText"></span>
+    </div>
+
+    <script src="data/translations.js"></script>
+    <script src="data/diseases.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

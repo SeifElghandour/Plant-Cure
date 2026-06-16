@@ -255,6 +255,34 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--mint-light);
 }
 
+.lang-toggle {
+    padding: 8px 14px;
+    margin-inline-end: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.header.scrolled .lang-toggle {
+    border-color: var(--gray-200);
+    background: white;
+    color: var(--gray-700);
+}
+
+.lang-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.header.scrolled .lang-toggle:hover {
+    background: var(--mint-light);
+    color: var(--gray-900);
+}
+
 .mobile-menu-btn {
     display: none;
     background: none;
@@ -978,6 +1006,18 @@ h1, h2, h3, h4, h5, h6 {
     gap: 20px;
 }
 
+.diseases-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--gray-500);
+    padding: 40px 20px;
+}
+
+.show-more-diseases {
+    display: none;
+    margin: 32px auto 0;
+}
+
 .disease-card {
     background: white;
     border-radius: var(--radius-lg);
@@ -1593,6 +1633,68 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--leaf-green);
 }
 
+.password-wrapper .password-input {
+    padding-right: 44px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border: none;
+    background: transparent;
+    color: var(--gray-400);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: var(--gray-700);
+}
+
+.password-toggle svg {
+    position: static;
+    transform: none;
+}
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 420px;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    animation: toast-slide-in 0.3s ease;
+}
+
+.toast-success {
+    background: rgba(39, 174, 96, 0.95);
+    color: #fff;
+}
+
+@keyframes toast-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .form-options {
     display: flex;
     align-items: center;
@@ -1965,4 +2067,96 @@ h1, h2, h3, h4, h5, h6 {
     .faq-cta-buttons {
         flex-direction: column;
     }
+}
+
+/* RTL layout (Arabic) */
+html[dir="rtl"] {
+    font-family: 'Cairo', 'Inter', sans-serif;
+}
+
+html[dir="rtl"] body {
+    text-align: right;
+}
+
+html[dir="rtl"] .header .container,
+html[dir="rtl"] .nav,
+html[dir="rtl"] .hero-features,
+html[dir="rtl"] .form-options,
+html[dir="rtl"] .footer-grid {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .form-input-wrapper svg,
+html[dir="rtl"] .form-input-wrapper .password-toggle {
+    left: auto;
+    right: 14px;
+}
+
+html[dir="rtl"] .form-input,
+html[dir="rtl"] .password-wrapper .password-input {
+    padding-left: 14px;
+    padding-right: 44px;
+}
+
+html[dir="rtl"] .nav-link,
+html[dir="rtl"] .mobile-nav-link,
+html[dir="rtl"] .section-title,
+html[dir="rtl"] .hero-description,
+html[dir="rtl"] .upload-title {
+    text-align: right;
+}
+
+/* Scan History */
+.history {
+    padding: 60px 0;
+    background: var(--bg-secondary, #f8faf9);
+}
+
+.history-container {
+    margin-top: 24px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.history-table th,
+.history-table td {
+    padding: 14px 18px;
+    text-align: start;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.history-table th {
+    background: rgba(45, 138, 107, 0.08);
+    color: var(--primary, #2d8a6b);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.history-table tbody tr:hover {
+    background: rgba(45, 138, 107, 0.04);
+}
+
+.history-empty {
+    text-align: center;
+    color: var(--text-muted, #6b7280);
+    padding: 32px 16px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+html[dir="rtl"] .history-table th,
+html[dir="rtl"] .history-table td {
+    text-align: right;
 }

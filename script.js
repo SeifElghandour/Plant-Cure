@@ -1,99 +1,188 @@
 // ============================================
-// Plant Scan AI - JavaScript
+// Doctor Plant AI - JavaScript
 // ============================================
 
-// ============================================
-// Disease Database
-// ============================================
-const diseasesDB = [
-    {
-        id: 1,
-        name: 'Powdery Mildew',
-        scientificName: 'Erysiphales',
-        category: 'fungal',
-        affectedPlants: ['Roses', 'Cucumbers', 'Tomatoes', 'Squash'],
-        symptoms: ['White powdery spots on leaves', 'Distorted growth', 'Yellowing leaves'],
-        severity: 'medium',
-        color: '#9b59b6',
-    },
-    {
-        id: 2,
-        name: 'Leaf Spot',
-        scientificName: 'Cercospora spp.',
-        category: 'fungal',
-        affectedPlants: ['Tomatoes', 'Peppers', 'Lettuce', 'Beans'],
-        symptoms: ['Brown/black spots on leaves', 'Yellow halos around spots', 'Premature leaf drop'],
-        severity: 'medium',
-        color: '#e74c3c',
-    },
-    {
-        id: 3,
-        name: 'Blight',
-        scientificName: 'Phytophthora infestans',
-        category: 'fungal',
-        affectedPlants: ['Potatoes', 'Tomatoes', 'Peppers', 'Eggplants'],
-        symptoms: ['Dark brown lesions', 'Rapid wilting', 'White fungal growth'],
-        severity: 'high',
-        color: '#c0392b',
-    },
-    {
-        id: 4,
-        name: 'Root Rot',
-        scientificName: 'Pythium spp.',
-        category: 'fungal',
-        affectedPlants: ['Houseplants', 'Tomatoes', 'Beans', 'Peas'],
-        symptoms: ['Yellowing leaves', 'Stunted growth', 'Brown mushy roots'],
-        severity: 'high',
-        color: '#8e44ad',
-    },
-    {
-        id: 5,
-        name: 'Bacterial Wilt',
-        scientificName: 'Ralstonia solanacearum',
-        category: 'bacterial',
-        affectedPlants: ['Tomatoes', 'Potatoes', 'Peppers', 'Eggplants'],
-        symptoms: ['Sudden wilting', 'Brown streaks in stems', 'Bacterial ooze'],
-        severity: 'high',
-        color: '#e67e22',
-    },
-    {
-        id: 6,
-        name: 'Aphids',
-        scientificName: 'Aphidoidea',
-        category: 'pest',
-        affectedPlants: ['Roses', 'Vegetables', 'Fruit trees', 'Ornamentals'],
-        symptoms: ['Sticky honeydew', 'Curling leaves', 'Stunted growth', 'Black sooty mold'],
-        severity: 'medium',
-        color: '#f39c12',
-    },
-    {
-        id: 7,
-        name: 'Spider Mites',
-        scientificName: 'Tetranychus urticae',
-        category: 'pest',
-        affectedPlants: ['Beans', 'Tomatoes', 'Strawberries', 'Houseplants'],
-        symptoms: ['Fine webbing', 'Yellow stippling', 'Bronze discoloration'],
-        severity: 'medium',
-        color: '#d35400',
-    },
-    {
-        id: 8,
-        name: 'Mosaic Virus',
-        scientificName: 'Tobamovirus',
-        category: 'viral',
-        affectedPlants: ['Tomatoes', 'Peppers', 'Cucumbers', 'Tobacco'],
-        symptoms: ['Mottled leaf pattern', 'Distorted growth', 'Reduced yields'],
-        severity: 'high',
-        color: '#27ae60',
-    },
-];
+// diseases array loaded from data/diseases.js
 
-// Severity labels
+// Severity / type styling for disease cards
 const severityLabels = {
     low: { text: 'Low Risk', bg: 'rgba(39, 174, 96, 0.15)', color: '#27ae60' },
     medium: { text: 'Moderate', bg: 'rgba(243, 156, 18, 0.15)', color: '#f39c12' },
     high: { text: 'High Risk', bg: 'rgba(231, 76, 60, 0.15)', color: '#e74c3c' },
+    none: { text: 'None', bg: 'rgba(45, 138, 107, 0.15)', color: '#2d8a6b' },
 };
+
+const typeColors = {
+    Fungal: '#9b59b6',
+    Bacterial: '#e67e22',
+    Viral: '#27ae60',
+    Pest: '#f39c12',
+    Healthy: '#2d8a6b',
+};
+
+const filterTypeMap = {
+    all: null,
+    fungal: 'Fungal',
+    bacterial: 'Bacterial',
+    viral: 'Viral',
+    pest: 'Pest',
+    healthy: 'Healthy',
+};
+
+function getAppLang() {
+    return localStorage.getItem('appLang') || localStorage.getItem('lang') || 'en';
+}
+
+function dl(disease, field) {
+    const lang = getAppLang();
+    const localized = disease[`${field}_${lang}`];
+    if (localized !== undefined && localized !== null && localized !== '') {
+        return localized;
+    }
+    return disease[`${field}_en`] || '';
+}
+
+function dlTags(disease) {
+    const lang = getAppLang();
+    const tags = disease[lang === 'ar' ? 'tags_ar' : 'tags_en'];
+    return Array.isArray(tags) ? tags : (disease.tags_en || []);
+}
+
+function getRiskStyle(risk) {
+    if (risk === 'High Risk' || risk === 'عالي الخطورة') return severityLabels.high;
+    if (risk === 'None' || risk === 'لا يوجد') return severityLabels.none;
+    return severityLabels.medium;
+}
+
+function escapeHtml(str) {
+    return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function normalizeDiseaseKey(str) {
+    return String(str || '')
+        .toLowerCase()
+        .replace(/___/g, '_')
+        .replace(/[^a-z0-9]/g, '');
+}
+
+function findDiseaseByResult(resultKey) {
+    if (!resultKey || typeof diseases === 'undefined' || !Array.isArray(diseases)) {
+        return null;
+    }
+
+    const norm = normalizeDiseaseKey(resultKey);
+    if (!norm) return null;
+
+    const exact = diseases.find((d) => normalizeDiseaseKey(d.name) === norm);
+    if (exact) return exact;
+
+    const byTitle = diseases.find((d) => normalizeDiseaseKey(dl(d, 'title')) === norm);
+    if (byTitle) return byTitle;
+
+    const partial = diseases.find((d) => {
+        const dn = normalizeDiseaseKey(d.name);
+        return dn.includes(norm) || norm.includes(dn);
+    });
+    if (partial) return partial;
+
+    return null;
+}
+
+function splitPreventionTips(text) {
+    if (!text || typeof text !== 'string') return [];
+    return text.split(/[.\n]/).map((s) => s.trim()).filter(Boolean);
+}
+
+function formatRawResultName(rawKey) {
+    if (!rawKey) return '';
+    return String(rawKey).replace(/___/g, ' ').replace(/_/g, ' ').trim();
+}
+
+function isPayloadHealthy(payload) {
+    const rawKey = payload.predicted_class || payload.result || payload.disease_name || '';
+    return (
+        payload.is_healthy === true ||
+        String(rawKey).toLowerCase().includes('healthy')
+    );
+}
+
+function isHealthyResult(rawKey, disease) {
+    if (!rawKey && !disease) return false;
+    if (String(rawKey).toLowerCase().includes('healthy')) return true;
+    if (disease) {
+        const type = dl(disease, 'type');
+        return type === 'Healthy' || type === 'سليم';
+    }
+    return false;
+}
+
+function buildDisplayResultFromPayload(payload) {
+    const rawKey =
+        payload.predicted_class ||
+        payload.result ||
+        payload.disease_name ||
+        '';
+    const disease = findDiseaseByResult(rawKey);
+    const healthy = payload.is_healthy === true || isHealthyResult(rawKey, disease);
+    const confidence = normalizeConfidence(payload.confidence);
+
+    if (disease) {
+        const preventionRaw = dl(disease, 'prevention');
+        let preventionTips = splitPreventionTips(preventionRaw);
+        if (!preventionTips.length) {
+            preventionTips = [t('noPrevention')];
+        }
+
+        return {
+            status: healthy ? 'healthy' : 'diseased',
+            diseaseName: dl(disease, 'title') || t('unknownDisease'),
+            confidence,
+            description: dl(disease, 'symptoms') || t('noSymptomsData'),
+            treatments: [
+                {
+                    title: t('recommendedTreatment'),
+                    description: dl(disease, 'treatment') || t('noTreatmentData'),
+                    icon: '🧪',
+                },
+            ],
+            preventionTips,
+        };
+    }
+
+    const preventionFromPayload = splitPreventionTips(payload.prevention);
+    const rawEnglishName =
+        formatRawResultName(payload.result || payload.predicted_class) ||
+        (payload.disease_name ? String(payload.disease_name) : '');
+
+    return {
+        status: healthy ? 'healthy' : 'diseased',
+        diseaseName: rawEnglishName || t('unknownDisease'),
+        confidence,
+        description: payload.symptoms || t('noSymptomsData'),
+        treatments: [
+            {
+                title: t('recommendedTreatment'),
+                description: payload.treatment || t('noTreatmentData'),
+                icon: '🧪',
+            },
+        ],
+        preventionTips: preventionFromPayload.length
+            ? preventionFromPayload
+            : [t('noPrevention')],
+    };
+}
+
+function getLocalizedPlantNameFromScan(scan) {
+    const key = scan?.result || scan?.predicted_class || scan?.disease_name || '';
+    const disease = findDiseaseByResult(key);
+    if (disease) return dl(disease, 'title') || t('unknownDisease');
+    const fallback = scan?.disease_name || key;
+    return fallback ? String(fallback).replace(/_/g, ' ') : t('unknownDisease');
+}
 
 // ============================================
 // Header Scroll Effect
@@ -142,6 +231,7 @@ function scrollToTop() {
 // ============================================
 let selectedFile = null;
 let uploadedImageData = null;
+let lastAnalysisPayload = null;
 
 const uploadZone = document.getElementById('uploadZone');
 const fileInput = document.getElementById('fileInput');
@@ -263,16 +353,21 @@ async function analyzeImage() {
         const formData = new FormData();
         formData.append('image', selectedFile);
 
-        const token = getAuthToken();
-        const endpoint = token
+        const authToken = getAuthToken();
+        const endpoint = authToken
             ? `${API_BASE_URL}/api/scans`
             : `${API_BASE_URL}/api/scans/analyze`;
 
-        const response = await fetch(endpoint, {
+        const fetchOptions = {
             method: 'POST',
-            headers: token ? getAuthHeaders() : {},
             body: formData,
-        });
+        };
+
+        if (authToken) {
+            fetchOptions.headers = { Authorization: `Bearer ${authToken}` };
+        }
+
+        const response = await fetch(endpoint, fetchOptions);
 
         let payload;
         try {
@@ -285,37 +380,16 @@ async function analyzeImage() {
             throw new Error(payload.message || 'Analysis failed. Please try again.');
         }
 
-        const isHealthy =
-            payload.is_healthy === true ||
-            String(payload.predicted_class || payload.result || '').toLowerCase().includes('healthy') ||
-            String(payload.disease_name || payload.result || '').toLowerCase().includes('healthy');
+        const isHealthy = isPayloadHealthy(payload);
+        lastAnalysisPayload = { ...payload, is_healthy: isHealthy };
 
-        const result = {
-            status: isHealthy ? 'healthy' : 'diseased',
-            diseaseName:
-                payload.disease_name ||
-                payload.result ||
-                payload.predicted_class ||
-                'Unknown',
-            confidence: Math.round(Number(payload.confidence) || 0),
-            description: payload.symptoms || 'No symptoms details available.',
-            treatments: [
-                {
-                    title: 'Recommended Treatment',
-                    description: payload.treatment || 'Consult an agricultural expert.',
-                    icon: '🧪',
-                },
-            ],
-            preventionTips: payload.prevention
-                ? payload.prevention
-                      .split(/[.\n]/)
-                      .map((tip) => tip.trim())
-                      .filter(Boolean)
-                : ['No prevention data available.'],
-        };
+        const result = buildDisplayResultFromPayload(lastAnalysisPayload);
 
         displayResults(result);
         document.getElementById('results').style.display = 'block';
+        if (getAuthToken()) {
+            fetchUserHistory();
+        }
         setTimeout(() => {
             scrollToSection('results');
         }, 100);
@@ -386,152 +460,268 @@ function displayResults(result) {
     const resultCard = document.getElementById('resultCard');
     
     if (result.status === 'healthy') {
-        statusBadge.textContent = 'Healthy Plant';
+        statusBadge.textContent = t('healthyPlant');
         statusBadge.className = 'status-badge';
         resultCard.className = 'result-card';
         document.getElementById('diseaseNameSection').style.display = 'none';
     } else {
-        statusBadge.textContent = 'Disease Detected';
+        statusBadge.textContent = t('diseaseDetected');
         statusBadge.className = 'status-badge diseased';
         resultCard.className = 'result-card diseased';
         document.getElementById('diseaseNameSection').style.display = 'block';
-        document.getElementById('diseaseName').textContent = result.diseaseName;
+        document.getElementById('diseaseName').textContent = result.diseaseName || t('unknownDisease');
     }
-    
-    // Update confidence
-    document.getElementById('confidence').textContent = `Confidence: ${result.confidence}%`;
-    document.getElementById('confidenceValue').textContent = `${result.confidence}%`;
-    document.getElementById('progressFill').style.width = `${result.confidence}%`;
-    
-    // Update description
-    document.getElementById('resultDescription').textContent = result.description;
-    
-    // Update treatments
+
+    const confidencePct = Number.isFinite(result.confidence) ? result.confidence : 0;
+    document.getElementById('confidence').textContent = `${t('confidence')}: ${confidencePct}%`;
+    document.getElementById('confidenceValue').textContent = `${confidencePct}%`;
+    document.getElementById('progressFill').style.width = `${confidencePct}%`;
+
+    document.getElementById('resultDescription').textContent = result.description || t('noSymptomsData');
+
     const treatmentsGrid = document.getElementById('treatmentsGrid');
-    treatmentsGrid.innerHTML = result.treatments.map(t => `
+    const treatments = Array.isArray(result.treatments) ? result.treatments : [];
+    treatmentsGrid.innerHTML = treatments
+        .map(
+            (item) => `
         <div class="treatment-card">
-            <div class="treatment-icon">${t.icon}</div>
-            <h4 class="treatment-title">${t.title}</h4>
-            <p class="treatment-description">${t.description}</p>
-        </div>
-    `).join('');
-    
-    // Update prevention tips
+            <div class="treatment-icon">${item.icon || '🧪'}</div>
+            <h4 class="treatment-title">${escapeHtml(item.title || t('recommendedTreatment'))}</h4>
+            <p class="treatment-description">${escapeHtml(item.description || t('noTreatmentData'))}</p>
+        </div>`
+        )
+        .join('');
+
     const preventionGrid = document.getElementById('preventionGrid');
-    preventionGrid.innerHTML = result.preventionTips.map(tip => `
+    const tips = Array.isArray(result.preventionTips) ? result.preventionTips : [t('noPrevention')];
+    preventionGrid.innerHTML = tips
+        .map(
+            (tip) => `
         <div class="prevention-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <p>${tip}</p>
-        </div>
-    `).join('');
+            <p>${escapeHtml(tip || t('noPrevention'))}</p>
+        </div>`
+        )
+        .join('');
+}
+
+function refreshAnalysisReport() {
+    if (!lastAnalysisPayload) return;
+    const resultsSection = document.getElementById('results');
+    if (!resultsSection || resultsSection.style.display === 'none') return;
+    displayResults(buildDisplayResultFromPayload(lastAnalysisPayload));
 }
 
 // ============================================
 // Diseases Gallery
 // ============================================
 let currentFilter = 'all';
+let visibleCount = 8;
+let filteredDiseases = [];
 
-function renderDiseases() {
-    const searchQuery = document.getElementById('diseaseSearch').value.toLowerCase();
-    const grid = document.getElementById('diseasesGrid');
-    
-    const filtered = diseasesDB.filter(disease => {
-        const matchesSearch = disease.name.toLowerCase().includes(searchQuery) ||
-                             disease.affectedPlants.some(p => p.toLowerCase().includes(searchQuery));
-        const matchesCategory = currentFilter === 'all' || disease.category === currentFilter;
-        return matchesSearch && matchesCategory;
-    });
-    
-    grid.innerHTML = filtered.map(disease => {
-        const severity = severityLabels[disease.severity];
-        return `
-            <div class="disease-card" onclick="openDiseaseModal(${disease.id})">
-                <div class="disease-card-header">
-                    <span class="disease-category" style="background: ${disease.color}20; color: ${disease.color}">
-                        ${disease.category}
-                    </span>
-                    <span class="disease-severity" style="background: ${severity.bg}; color: ${severity.color}">
-                        ${severity.text}
-                    </span>
-                </div>
-                <h4 class="disease-name">${disease.name}</h4>
-                <p class="disease-scientific">${disease.scientificName}</p>
-                <div class="disease-plants">
-                    ${disease.affectedPlants.slice(0, 3).map(plant => 
-                        `<span class="disease-plant-tag">${plant}</span>`
-                    ).join('')}
-                    ${disease.affectedPlants.length > 3 ? 
-                        `<span class="disease-plant-tag">+${disease.affectedPlants.length - 3}</span>` : ''}
-                </div>
+const modalSectionLabels = {
+    en: {
+        affectedPlants: 'Affected Plants',
+        symptoms: 'Symptoms',
+        treatment: 'Treatment',
+        prevention: 'Prevention',
+        scanCta: 'Scan Your Plant for This Disease',
+        empty: 'No diseases found matching your search.',
+        showMore: 'Show More',
+    },
+    ar: {
+        affectedPlants: 'النباتات المتأثرة',
+        symptoms: 'الأعراض',
+        treatment: 'العلاج',
+        prevention: 'الوقاية',
+        scanCta: 'افحص نباتك لهذا المرض',
+        empty: 'لم يتم العثور على أمراض مطابقة لبحثك.',
+        showMore: 'عرض المزيد',
+    },
+};
+
+function getModalLabels() {
+    return modalSectionLabels[getAppLang()] || modalSectionLabels.en;
+}
+
+function diseaseMatchesSearch(disease, query) {
+    if (!query) return true;
+
+    const searchable = [
+        disease.name,
+        disease.title_en,
+        disease.title_ar,
+        ...(disease.tags_en || []),
+        ...(disease.tags_ar || []),
+    ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+    return searchable.includes(query);
+}
+
+function updateShowMoreButton(totalCount) {
+    const showMoreBtn = document.getElementById('showMoreDiseases');
+    if (!showMoreBtn) return;
+
+    const labels = getModalLabels();
+    showMoreBtn.textContent = labels.showMore;
+    showMoreBtn.style.display = visibleCount >= totalCount ? 'none' : 'inline-flex';
+}
+
+function renderDiseases(diseasesArray) {
+    const grid = document.getElementById('diseasesContainer');
+    if (!grid) return;
+
+    if (!Array.isArray(diseasesArray)) {
+        diseasesArray = [];
+    }
+
+    grid.innerHTML = '';
+    const labels = getModalLabels();
+    const visibleItems = diseasesArray.slice(0, visibleCount);
+
+    if (!visibleItems.length) {
+        grid.innerHTML = `<p class="diseases-empty">${labels.empty}</p>`;
+        updateShowMoreButton(0);
+        return;
+    }
+
+    visibleItems.forEach((disease) => {
+        const masterIndex = diseases.findIndex((d) => d.name === disease.name);
+        const typeEn = disease.type_en || 'Fungal';
+        const typeColor = typeColors[typeEn] || '#3498db';
+        const typeLabel = dl(disease, 'type');
+        const riskLabel = dl(disease, 'risk');
+        const risk = getRiskStyle(riskLabel);
+        const tags = dlTags(disease);
+        const visibleTags = tags.slice(0, 3);
+        const extraTags = tags.length > 3 ? tags.length - 3 : 0;
+
+        const card = document.createElement('div');
+        card.className = 'disease-card';
+        card.onclick = () => openDiseaseModal(masterIndex);
+        card.innerHTML = `
+            <div class="disease-card-header">
+                <span class="disease-category" style="background: ${typeColor}20; color: ${typeColor}">
+                    ${typeLabel}
+                </span>
+                <span class="disease-severity" style="background: ${risk.bg}; color: ${risk.color}">
+                    ${riskLabel}
+                </span>
+            </div>
+            <h4 class="disease-name">${dl(disease, 'title')}</h4>
+            <p class="disease-scientific">${disease.name}</p>
+            <div class="disease-plants">
+                ${visibleTags.map((tag) => `<span class="disease-plant-tag">${tag}</span>`).join('')}
+                ${extraTags ? `<span class="disease-plant-tag">+${extraTags}</span>` : ''}
             </div>
         `;
-    }).join('');
+        grid.appendChild(card);
+    });
+
+    updateShowMoreButton(diseasesArray.length);
 }
 
 function filterDiseases() {
-    renderDiseases();
+    visibleCount = 8;
+
+    const searchInput = document.getElementById('diseaseSearch');
+    const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    if (!Array.isArray(diseases)) {
+        filteredDiseases = [];
+        renderDiseases(filteredDiseases);
+        return;
+    }
+
+    filteredDiseases = diseases.filter((disease) => {
+        const matchesSearch = diseaseMatchesSearch(disease, searchQuery);
+        const matchesCategory =
+            currentFilter === 'all' || disease.type_en === filterTypeMap[currentFilter];
+        return matchesSearch && matchesCategory;
+    });
+
+    renderDiseases(filteredDiseases);
+}
+
+function showMoreDiseases() {
+    visibleCount += 8;
+    renderDiseases(filteredDiseases);
 }
 
 function setFilter(category, btn) {
     currentFilter = category;
-    
-    // Update active button
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+
+    document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
     btn.classList.add('active');
-    
-    renderDiseases();
+
+    filterDiseases();
 }
 
-function openDiseaseModal(id) {
-    const disease = diseasesDB.find(d => d.id === id);
+function openDiseaseModal(index) {
+    const disease = diseases[index];
     if (!disease) return;
-    
-    const severity = severityLabels[disease.severity];
+
+    const typeEn = disease.type_en || 'Fungal';
+    const typeColor = typeColors[typeEn] || '#3498db';
+    const typeLabel = dl(disease, 'type');
+    const riskLabel = dl(disease, 'risk');
+    const risk = getRiskStyle(riskLabel);
+    const tags = dlTags(disease);
+    const labels = getModalLabels();
     const modalBody = document.getElementById('modalBody');
-    
+
     modalBody.innerHTML = `
         <div class="modal-body">
             <div class="modal-header">
                 <div class="modal-badges">
-                    <span class="disease-category" style="background: ${disease.color}20; color: ${disease.color}">
-                        ${disease.category}
+                    <span class="disease-category" style="background: ${typeColor}20; color: ${typeColor}">
+                        ${typeLabel}
                     </span>
-                    <span class="disease-severity" style="background: ${severity.bg}; color: ${severity.color}">
-                        ${severity.text}
+                    <span class="disease-severity" style="background: ${risk.bg}; color: ${risk.color}">
+                        ${riskLabel}
                     </span>
                 </div>
-                <h3 class="modal-title">${disease.name}</h3>
-                <p class="modal-subtitle">${disease.scientificName}</p>
+                <h3 class="modal-title">${dl(disease, 'title')}</h3>
+                <p class="modal-subtitle">${disease.name}</p>
             </div>
-            
+
             <div class="modal-section">
                 <h4 class="modal-section-title">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-                    Affected Plants
+                    ${labels.affectedPlants}
                 </h4>
                 <div class="modal-plants">
-                    ${disease.affectedPlants.map(plant => 
-                        `<span class="modal-plant-tag">${plant}</span>`
-                    ).join('')}
+                    ${tags.map((tag) => `<span class="modal-plant-tag">${tag}</span>`).join('')}
                 </div>
             </div>
-            
+
             <div class="modal-section">
                 <h4 class="modal-section-title">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                    Common Symptoms
+                    ${labels.symptoms}
                 </h4>
-                <ul class="modal-symptoms">
-                    ${disease.symptoms.map(s => `<li>${s}</li>`).join('')}
-                </ul>
+                <p class="modal-text">${dl(disease, 'symptoms')}</p>
             </div>
-            
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">${labels.treatment}</h4>
+                <p class="modal-text">${dl(disease, 'treatment')}</p>
+            </div>
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">${labels.prevention}</h4>
+                <p class="modal-text">${dl(disease, 'prevention')}</p>
+            </div>
+
             <button class="btn btn-primary btn-full" onclick="closeModal(); scrollToSection('upload')">
-                Scan Your Plant for This Disease
+                ${labels.scanCta}
             </button>
         </div>
     `;
-    
+
     document.getElementById('diseaseModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -589,7 +779,104 @@ function switchTab(tab, btn) {
 const AUTH_STORAGE_KEYS = ['token', 'userName', 'userEmail', 'userId'];
 
 function getAuthToken() {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    return token ? token.trim() : null;
+}
+
+function normalizeConfidence(value) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) return 0;
+    if (num > 0 && num <= 1) return Math.round(num * 100);
+    if (num > 1 && num <= 10) return Math.round(num * 10);
+    if (num <= 100) return Math.round(num);
+    return 100;
+}
+
+// ============================================
+// Scan History
+// ============================================
+let lastHistoryData = [];
+
+async function fetchUserHistory() {
+    const token = getAuthToken();
+    const historySection = document.getElementById('history');
+
+    if (!token) {
+        lastHistoryData = [];
+        if (historySection) historySection.style.display = 'none';
+        renderHistory([]);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/scans/user`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+            lastHistoryData = [];
+            renderHistory([]);
+            return;
+        }
+
+        const data = await response.json();
+        lastHistoryData = Array.isArray(data) ? data : [];
+        renderHistory(lastHistoryData);
+        if (historySection) historySection.style.display = 'block';
+    } catch (error) {
+        console.error('History fetch error:', error);
+        lastHistoryData = [];
+        renderHistory([]);
+    }
+}
+
+function formatHistoryDate(dateStr) {
+    if (!dateStr) return '—';
+    const date = new Date(dateStr);
+    if (Number.isNaN(date.getTime())) return '—';
+    const lang = getAppLang();
+    return date.toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+}
+
+function renderHistory(historyData) {
+    const container = document.getElementById('historyContainer');
+    if (!container) return;
+
+    if (!Array.isArray(historyData) || historyData.length === 0) {
+        container.innerHTML = `<p class="history-empty">${escapeHtml(t('noPreviousAnalyses'))}</p>`;
+        return;
+    }
+
+    const rows = historyData
+        .map((scan) => {
+            const plantName = escapeHtml(getLocalizedPlantNameFromScan(scan));
+            const confidence = normalizeConfidence(scan.confidence);
+            const date = escapeHtml(formatHistoryDate(scan.createdAt));
+            return `<tr>
+                <td>${plantName}</td>
+                <td>${confidence}%</td>
+                <td>${date}</td>
+            </tr>`;
+        })
+        .join('');
+
+    container.innerHTML = `
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>${escapeHtml(t('historyPlantName'))}</th>
+                    <th>${escapeHtml(t('historyConfidence'))}</th>
+                    <th>${escapeHtml(t('historyDate'))}</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
 }
 
 function getAuthHeaders() {
@@ -663,13 +950,18 @@ function updateAuthUI() {
         const navLabel = user.name ? user.name.split(' ')[0] : 'Account';
         authNavLink.textContent = navLabel;
         authMobileNavLink.textContent = navLabel;
+        fetchUserHistory();
         return;
     }
 
     authLoggedIn.style.display = 'none';
     authForms.style.display = 'block';
-    authNavLink.textContent = 'Login';
-    authMobileNavLink.textContent = 'Login';
+    authNavLink.textContent = t('navLogin');
+    authMobileNavLink.textContent = t('navLogin');
+    const historySection = document.getElementById('history');
+    if (historySection) historySection.style.display = 'none';
+    lastHistoryData = [];
+    renderHistory([]);
 }
 
 async function authRequest(endpoint, body) {
@@ -737,8 +1029,9 @@ async function handleRegister(event) {
     const email = document.getElementById('registerEmail').value.trim();
     const password = document.getElementById('registerPassword').value;
 
-    if (password.length < 6) {
-        showAuthMessage('Password must be at least 6 characters.');
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+        showAuthMessage('Password must be at least 8 characters and include uppercase, lowercase, number, and special character (@$!%*?&).');
         return;
     }
 
@@ -746,10 +1039,9 @@ async function handleRegister(event) {
 
     try {
         const data = await authRequest('/api/users/register', { name, email, password });
-        saveAuthSession(data, true);
-        updateAuthUI();
         document.getElementById('registerForm').reset();
-        showAuthMessage('Account created successfully. You are now signed in.', 'success');
+        switchTab('login', document.querySelector('.auth-tab[onclick*="login"]'));
+        showToast(data.message || 'Registration successful. Please check your email to verify your account.', 'success');
     } catch (error) {
         showAuthMessage(error.message || 'Registration failed. Please try again.');
     } finally {
@@ -767,11 +1059,102 @@ function socialLogin(provider) {
     showAuthMessage(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not available yet.`);
 }
 
+function togglePasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const wrapper = input.closest('.password-wrapper');
+    const eyeIcon = wrapper.querySelector('.eye-icon');
+    const eyeOffIcon = wrapper.querySelector('.eye-off-icon');
+    const isHidden = input.type === 'password';
+
+    input.type = isHidden ? 'text' : 'password';
+    eyeIcon.style.display = isHidden ? 'none' : 'block';
+    eyeOffIcon.style.display = isHidden ? 'block' : 'none';
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+    if (!toast || !toastText) return;
+
+    toast.className = `toast toast-${type}`;
+    toastText.textContent = message;
+    toast.style.display = 'flex';
+
+    clearTimeout(showToast._hideTimer);
+    showToast._hideTimer = setTimeout(() => {
+        toast.style.display = 'none';
+    }, 5000);
+}
+
+// ============================================
+// Internationalization (i18n)
+// ============================================
+// translations loaded from data/translations.js
+
+let currentLang = localStorage.getItem('appLang') || localStorage.getItem('lang') || 'en';
+
+function t(key) {
+    const lang = getAppLang();
+    return translations[lang]?.[key] || translations.en[key] || '';
+}
+
+function applyLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    localStorage.setItem('appLang', lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+    if (translations[lang]?.pageTitle) {
+        document.title = translations[lang].pageTitle;
+    }
+
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang][key]) {
+            el.placeholder = translations[lang][key];
+        }
+    });
+
+    const langToggle = document.getElementById('langToggle');
+    if (langToggle) {
+        langToggle.textContent = lang === 'en' ? 'العربية' : 'English';
+    }
+
+    updateAuthUI();
+    refreshAnalysisReport();
+
+    if (lastHistoryData.length) {
+        renderHistory(lastHistoryData);
+    }
+
+    if (filteredDiseases.length) {
+        renderDiseases(filteredDiseases);
+    } else {
+        filterDiseases();
+    }
+}
+
+function toggleLanguage() {
+    applyLanguage(currentLang === 'en' ? 'ar' : 'en');
+}
+
 // ============================================
 // Initialize
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    renderDiseases();
+    applyLanguage(currentLang);
+    filterDiseases();
     updateAuthUI();
+    if (getAuthToken()) {
+        fetchUserHistory();
+    }
     document.querySelector('.faq-item').classList.add('active');
 });
