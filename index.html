@@ -640,6 +640,51 @@
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
                     </form>
+
+                    <!-- OTP Verification -->
+                    <div id="otpVerification" class="otp-verification" style="display: none;">
+                        <div class="otp-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        </div>
+                        <h3 class="form-title" data-i18n="otpTitle">Verify Your Email</h3>
+                        <p class="form-subtitle" data-i18n="otpSubtitle">Enter the 6-digit code we sent to your email address.</p>
+                        <p class="otp-email-display" id="otpEmailDisplay"></p>
+
+                        <div id="otpMessage" class="auth-message" style="display: none;">
+                            <span id="otpMessageText"></span>
+                        </div>
+
+                        <form id="otpForm" class="form" onsubmit="handleVerifyOtp(event)">
+                            <div class="form-group">
+                                <label class="form-label" for="otpInput" data-i18n="otpLabel">Verification Code</label>
+                                <input
+                                    type="text"
+                                    id="otpInput"
+                                    class="form-input otp-input"
+                                    inputmode="numeric"
+                                    pattern="[0-9]{6}"
+                                    maxlength="6"
+                                    placeholder="000000"
+                                    data-i18n-placeholder="otpPlaceholder"
+                                    autocomplete="one-time-code"
+                                    required
+                                >
+                            </div>
+                            <button type="submit" id="otpSubmitBtn" class="btn btn-primary btn-full">
+                                <span id="otpSubmitText" data-i18n="otpVerifyBtn">Verify Email</span>
+                                <span id="otpSubmitLoading" class="btn-loading" style="display: none;">
+                                    <span class="spinner"></span>
+                                    <span data-i18n="otpVerifying">Verifying...</span>
+                                </span>
+                            </button>
+                        </form>
+
+                        <p class="otp-resend-row">
+                            <span data-i18n="otpResendPrompt">Didn't receive the code?</span>
+                            <button type="button" id="otpResendBtn" class="form-link otp-resend-btn" onclick="handleResendOtp()" data-i18n="otpResendBtn">Resend Code</button>
+                        </p>
+                        <button type="button" class="form-link otp-back-btn" onclick="hideOtpVerification()" data-i18n="otpBackToLogin">Back to Login</button>
+                    </div>
                     
                     <!-- OAuth not configured yet
                     <div class="social-login">

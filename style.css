@@ -2160,3 +2160,65 @@ html[dir="rtl"] .history-table th,
 html[dir="rtl"] .history-table td {
     text-align: right;
 }
+
+/* OTP Verification */
+.otp-verification {
+    padding: 8px 0 0;
+}
+
+.otp-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(45, 138, 107, 0.12);
+    color: var(--primary, #2d8a6b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+}
+
+.otp-email-display {
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary, #2d8a6b);
+    margin: 0 0 20px;
+    word-break: break-all;
+}
+
+.otp-input {
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 0.4em;
+    font-weight: 700;
+}
+
+.otp-resend-row {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--text-muted, #6b7280);
+    font-size: 0.95rem;
+}
+
+.otp-resend-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 6px;
+    font: inherit;
+}
+
+.otp-back-btn {
+    display: block;
+    margin: 16px auto 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+}
+
+html[dir="rtl"] .otp-resend-btn {
+    margin-left: 0;
+    margin-right: 6px;
+}

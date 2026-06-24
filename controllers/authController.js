@@ -1,11 +1,29 @@
-const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 const sendEmail = require('../utils/sendEmail');
+const { buildOtpEmailHtml } = require('../utils/sendEmail');
 
 const PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&]).{8,}$/;
+const OTP_EXPIRY_MS = 10 * 60 * 1000;
+
+function generateOtp() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+async function assignAndSendOtp(user) {
+  const otp = generateOtp();
+  user.otp = otp;
+  user.otpExpires = new Date(Date.now() + OTP_EXPIRY_MS);
+  await user.save();
+
+  await sendEmail({
+    email: user.email,
+    subject: 'Your Doctor Plant AI verification code',
+    message: buildOtpEmailHtml(user.name, otp),
+  });
+}
 
 // @desc    Register new user
 // @route   POST /api/users/register
@@ -25,64 +43,108 @@ const registerUser = asyncHandler(async (req, res) => {
     );
   }
 
-  // Check if user exists
-  const userExists = await User.findOne({ email });
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const userExists = await User.findOne({ email: normalizedEmail });
 
   if (userExists) {
     res.status(400);
     throw new Error('User already exists');
   }
 
-  const verificationToken = crypto.randomBytes(32).toString('hex');
-
-  // Hash password
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // Create user
   const user = await User.create({
     name,
-    email,
+    email: normalizedEmail,
     password: hashedPassword,
     isVerified: false,
-    verificationToken,
   });
 
-  const verificationUrl = `http://localhost:3000/api/users/verify/${verificationToken}`;
-
-  await sendEmail({
-    email: user.email,
-    subject: 'Verify your Plant Scan AI account',
-    message: `
-      <h2>Welcome to Plant Scan AI, ${user.name}!</h2>
-      <p>Please verify your email address by clicking the link below:</p>
-      <a href="${verificationUrl}" target="_blank">${verificationUrl}</a>
-      <p>If you did not create this account, you can ignore this email.</p>
-    `,
-  });
+  await assignAndSendOtp(user);
 
   res.status(201).json({
-    message: 'Registration successful. Please check your email to verify your account before logging in.',
+    message: 'Registration successful. Enter the 6-digit code sent to your email.',
+    email: user.email,
   });
 });
 
-// @desc    Verify user email
-// @route   GET /api/users/verify/:token
+// @desc    Verify user email with OTP
+// @route   POST /api/users/verify
 // @access  Public
 const verifyEmail = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ verificationToken: req.params.token });
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    res.status(400);
+    throw new Error('Email and verification code are required');
+  }
+
+  const user = await User.findOne({ email: email.trim().toLowerCase() });
 
   if (!user) {
     res.status(400);
-    throw new Error('Invalid or expired verification token');
+    throw new Error('Invalid verification request');
+  }
+
+  if (user.isVerified) {
+    res.status(400);
+    throw new Error('This account is already verified. You can log in.');
+  }
+
+  if (!user.otp || !user.otpExpires) {
+    res.status(400);
+    throw new Error('No active verification code. Please request a new one.');
+  }
+
+  if (user.otpExpires.getTime() < Date.now()) {
+    res.status(400);
+    throw new Error('Verification code has expired. Please request a new one.');
+  }
+
+  if (String(user.otp) !== String(otp).trim()) {
+    res.status(400);
+    throw new Error('Invalid verification code. Please try again.');
   }
 
   user.isVerified = true;
-  user.verificationToken = null;
+  user.otp = null;
+  user.otpExpires = null;
   await user.save();
 
   res.status(200).json({
     message: 'Email verified successfully. You can now log in.',
+  });
+});
+
+// @desc    Resend OTP verification code
+// @route   POST /api/users/resend-otp
+// @access  Public
+const resendOTP = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    res.status(400);
+    throw new Error('Email is required');
+  }
+
+  const user = await User.findOne({ email: email.trim().toLowerCase() });
+
+  if (!user) {
+    res.status(400);
+    throw new Error('No account found with that email address');
+  }
+
+  if (user.isVerified) {
+    res.status(400);
+    throw new Error('This account is already verified. You can log in.');
+  }
+
+  await assignAndSendOtp(user);
+
+  res.status(200).json({
+    message: 'A new verification code has been sent to your email.',
   });
 });
 
@@ -92,8 +154,8 @@ const verifyEmail = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Check for user email
-  const user = await User.findOne({ email });
+  const normalizedEmail = email.trim().toLowerCase();
+  const user = await User.findOne({ email: normalizedEmail });
 
   if (user && (await bcrypt.compare(password, user.password))) {
     if (!user.isVerified) {
@@ -113,7 +175,6 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Generate JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -123,5 +184,6 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   verifyEmail,
+  resendOTP,
   loginUser,
 };

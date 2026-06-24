@@ -763,13 +763,117 @@ function switchTab(tab, btn) {
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     clearAuthMessage();
-    
+    document.getElementById('otpVerification').style.display = 'none';
+    document.querySelector('.auth-tabs').style.display = 'flex';
+
     if (tab === 'login') {
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('registerForm').style.display = 'none';
     } else {
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('registerForm').style.display = 'block';
+    }
+}
+
+// ============================================
+// OTP Email Verification
+// ============================================
+let pendingVerificationEmail = '';
+
+function showOtpVerification(email) {
+    pendingVerificationEmail = String(email || '').trim().toLowerCase();
+    document.getElementById('authLoggedIn').style.display = 'none';
+    document.getElementById('authForms').style.display = 'block';
+    document.querySelector('.auth-tabs').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('otpVerification').style.display = 'block';
+    document.getElementById('otpEmailDisplay').textContent = pendingVerificationEmail;
+    document.getElementById('otpInput').value = '';
+    clearOtpMessage();
+    clearAuthMessage();
+    document.getElementById('otpInput').focus();
+}
+
+function hideOtpVerification() {
+    document.getElementById('otpVerification').style.display = 'none';
+    document.querySelector('.auth-tabs').style.display = 'flex';
+    pendingVerificationEmail = '';
+    switchTab('login', document.querySelector('.auth-tab[onclick*="login"]'));
+}
+
+function showOtpMessage(message, type = 'error') {
+    const otpMessage = document.getElementById('otpMessage');
+    document.getElementById('otpMessageText').textContent = message;
+    otpMessage.className = `auth-message ${type}`;
+    otpMessage.style.display = 'flex';
+}
+
+function clearOtpMessage() {
+    const otpMessage = document.getElementById('otpMessage');
+    otpMessage.style.display = 'none';
+    otpMessage.className = 'auth-message';
+}
+
+function setOtpLoading(isLoading) {
+    const submitBtn = document.getElementById('otpSubmitBtn');
+    const submitText = document.getElementById('otpSubmitText');
+    const submitLoading = document.getElementById('otpSubmitLoading');
+    submitBtn.disabled = isLoading;
+    submitText.style.display = isLoading ? 'none' : 'inline';
+    submitLoading.style.display = isLoading ? 'inline-flex' : 'none';
+}
+
+async function handleVerifyOtp(event) {
+    event.preventDefault();
+    clearOtpMessage();
+
+    const otp = document.getElementById('otpInput').value.trim();
+    if (!/^\d{6}$/.test(otp)) {
+        showOtpMessage('Please enter a valid 6-digit code.');
+        return;
+    }
+
+    if (!pendingVerificationEmail) {
+        showOtpMessage('Session expired. Please register or log in again.');
+        return;
+    }
+
+    setOtpLoading(true);
+
+    try {
+        const data = await authRequest('/api/users/verify', {
+            email: pendingVerificationEmail,
+            otp,
+        });
+        showToast(data.message || t('otpVerifySuccess'), 'success');
+        hideOtpVerification();
+    } catch (error) {
+        showOtpMessage(error.message || 'Verification failed. Please try again.');
+    } finally {
+        setOtpLoading(false);
+    }
+}
+
+async function handleResendOtp() {
+    if (!pendingVerificationEmail) {
+        showOtpMessage('Session expired. Please register again.');
+        return;
+    }
+
+    clearOtpMessage();
+    const resendBtn = document.getElementById('otpResendBtn');
+    resendBtn.disabled = true;
+
+    try {
+        const data = await authRequest('/api/users/resend-otp', {
+            email: pendingVerificationEmail,
+        });
+        showOtpMessage(data.message || t('otpResentSuccess'), 'success');
+    } catch (error) {
+        showOtpMessage(error.message || 'Could not resend code. Please try again.');
+    } finally {
+        resendBtn.disabled = false;
     }
 }
 
@@ -944,6 +1048,8 @@ function updateAuthUI() {
     if (user) {
         authLoggedIn.style.display = 'block';
         authForms.style.display = 'none';
+        document.getElementById('otpVerification').style.display = 'none';
+        pendingVerificationEmail = '';
         document.getElementById('authUserName').textContent = user.name || 'User';
         document.getElementById('authUserEmail').textContent = user.email || '';
 
@@ -1015,7 +1121,11 @@ async function handleLogin(event) {
         document.getElementById('loginForm').reset();
         showAuthMessage('Signed in successfully.', 'success');
     } catch (error) {
-        showAuthMessage(error.message || 'Login failed. Please try again.');
+        const msg = error.message || 'Login failed. Please try again.';
+        if (msg.toLowerCase().includes('verify')) {
+            showOtpVerification(email.trim().toLowerCase());
+        }
+        showAuthMessage(msg);
     } finally {
         setAuthLoading('login', false);
     }
@@ -1039,9 +1149,10 @@ async function handleRegister(event) {
 
     try {
         const data = await authRequest('/api/users/register', { name, email, password });
+        const registeredEmail = data.email || email.trim().toLowerCase();
         document.getElementById('registerForm').reset();
-        switchTab('login', document.querySelector('.auth-tab[onclick*="login"]'));
-        showToast(data.message || 'Registration successful. Please check your email to verify your account.', 'success');
+        showOtpVerification(registeredEmail);
+        showToast(data.message || 'Registration successful. Enter the code sent to your email.', 'success');
     } catch (error) {
         showAuthMessage(error.message || 'Registration failed. Please try again.');
     } finally {
