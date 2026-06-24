@@ -365,8 +365,8 @@ async function analyzeImage() {
 
         const authToken = getAuthToken();
         const endpoint = authToken
-            ? `${API_BASE_URL}/api/scans`
-            : `${API_BASE_URL}/api/scans/analyze/`;
+           ? `${API_BASE_URL}/api/scans/upload`
+           : `${API_BASE_URL}/api/scans/analyze`;
 
         const fetchOptions = {
             method: 'POST',

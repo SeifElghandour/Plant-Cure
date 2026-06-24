@@ -74,7 +74,7 @@ router.post(
  * @desc    Analyze image and save scan history for authenticated user
  * @access  Private
  */
-router.post('/', protect, upload.single('image'), handleMulterError, uploadScan);
+router.post('/upload', protect, upload.single('image'), handleMulterError, uploadScan);
 
 /**
  * @route   GET /api/scans
