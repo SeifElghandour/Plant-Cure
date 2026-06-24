@@ -48,8 +48,7 @@ app.use('/uploads', express.static(uploadDir));
 
 app.use('/api/users', require('./routes/authRoutes'));
 app.use('/api/scans', require('./routes/scanRoutes'));
-console.log("=== Mounted Routes ===");
-app._router.stack.forEach(r => { if (r.route) console.log(r.route.path) });
+
 app.get('/', (_req, res) => {
   res.send('Plant Scan AI - Backend API is running...');
 });
