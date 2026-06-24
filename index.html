@@ -808,6 +808,34 @@
         </div>
     </div>
 
+    <!-- Limit Reached Modal -->
+    <div class="limit-modal" id="limitReachedModal">
+        <div class="limit-modal-content">
+            <div class="limit-modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v4"/>
+                    <path d="M12 18v4"/>
+                    <path d="M4.93 4.93l2.83 2.83"/>
+                    <path d="M16.24 16.24l2.83 2.83"/>
+                    <path d="M2 12h4"/>
+                    <path d="M18 12h4"/>
+                    <path d="M4.93 19.07l2.83-2.83"/>
+                    <path d="M16.24 7.76l2.83-2.83"/>
+                </svg>
+            </div>
+            <h2 class="limit-modal-title">Free Limit Reached!</h2>
+            <p class="limit-modal-message">You've reached your free limit of 3 scans. Please create an account to get unlimited scans and save your history!</p>
+            <div class="limit-modal-actions">
+                <button class="btn btn-primary" onclick="closeLimitReachedModal(); scrollToSection('auth')">
+                    Create Free Account
+                </button>
+                <button class="btn btn-secondary" onclick="closeLimitReachedModal()">
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast toast-success" style="display: none;" role="status" aria-live="polite">
         <span id="toastText"></span>
     </div>

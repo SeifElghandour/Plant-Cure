@@ -325,6 +325,16 @@ function showError(message) {
     document.getElementById('errorMessage').style.display = 'flex';
 }
 
+function showLimitReachedModal() {
+    document.getElementById('limitReachedModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLimitReachedModal() {
+    document.getElementById('limitReachedModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -377,6 +387,11 @@ async function analyzeImage() {
         }
 
         if (!response.ok) {
+            // Handle guest limit reached error
+            if (response.status === 403 && payload.error === 'LimitReached') {
+                showLimitReachedModal();
+                throw new Error('LimitReached');
+            }
             throw new Error(payload.message || 'Analysis failed. Please try again.');
         }
 

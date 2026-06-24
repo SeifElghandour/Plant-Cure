@@ -4,6 +4,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const Scan = require('../models/Scan');
 const Disease = require('../models/Disease');
+const GuestLimit = require('../models/GuestLimit');
 const {
   mapPredictedClassToDbName,
   formatDisplayName,
@@ -127,6 +128,33 @@ const analyzeScan = asyncHandler(async (req, res) => {
     throw new Error('Please upload an image file');
   }
 
+  // Get client IP address (handle proxy scenarios)
+  const getClientIp = () => {
+    return req.ip || 
+           req.connection.remoteAddress || 
+           req.socket.remoteAddress ||
+           (req.connection.socket ? req.connection.socket.remoteAddress : null) ||
+           req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+           '127.0.0.1';
+  };
+
+  const clientIp = getClientIp();
+
+  // Check guest limit
+  const GUEST_LIMIT = 3;
+  let guestLimit = await GuestLimit.findOne({ ip: clientIp });
+
+  if (!guestLimit) {
+    guestLimit = await GuestLimit.create({ ip: clientIp, scanCount: 0 });
+  }
+
+  if (guestLimit.scanCount >= GUEST_LIMIT) {
+    return res.status(403).json({
+      error: 'LimitReached',
+      message: 'You have used your 3 free guest scans. Please register to continue.',
+    });
+  }
+
   const filePath = req.file.path;
 
   try {
@@ -139,6 +167,13 @@ const analyzeScan = asyncHandler(async (req, res) => {
     const { dbName, symptoms, treatment, prevention } =
       await lookupDiseaseInfo(predictedClass);
 
+    // Increment scan count
+    guestLimit.scanCount += 1;
+    guestLimit.lastScanAt = new Date();
+    await guestLimit.save();
+
+    const remainingScans = GUEST_LIMIT - guestLimit.scanCount;
+
     res.status(200).json({
       predicted_class: predictedClass,
       disease_name: formatDisplayName(dbName || predictedClass),
@@ -149,6 +184,7 @@ const analyzeScan = asyncHandler(async (req, res) => {
       is_healthy:
         (dbName || predictedClass).toLowerCase() === 'healthy' ||
         String(predictedClass).toLowerCase().includes('healthy'),
+      remainingScans,
     });
   } catch (error) {
     handlePipelineError(error, res);
