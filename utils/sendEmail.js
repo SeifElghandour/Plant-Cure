@@ -1,3 +1,4 @@
+require('dns').setDefaultResultOrder('ipv4first');
 const nodemailer = require('nodemailer');
 
 function buildOtpEmailHtml(name, otp) {
@@ -21,11 +22,17 @@ const sendEmail = async (options) => {
     console.log('[Email] Using EMAIL_USERNAME:', process.env.EMAIL_USERNAME ? '***' + process.env.EMAIL_USERNAME.slice(-4) : 'NOT_SET');
     
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      family: 4
     });
 
     const mailOptions = {
