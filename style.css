@@ -1735,12 +1735,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .password-wrapper .password-input {
-    padding-inline-end: 44px;
+    padding-right: 44px;
 }
 
 .password-toggle {
     position: absolute;
-    inset-inline-end: 12px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -2187,16 +2187,30 @@ html[dir="rtl"] .footer-grid {
     flex-direction: row-reverse;
 }
 
-html[dir="rtl"] .form-input-wrapper svg,
-html[dir="rtl"] .form-input-wrapper .password-toggle {
-    inset-inline-start: auto;
-    inset-inline-end: 14px;
+/* Leading icon inside an input (email/lock icon) flips to the right edge in RTL */
+html[dir="rtl"] .form-input-wrapper svg {
+    left: auto;
+    right: 14px;
 }
 
-html[dir="rtl"] .form-input,
+/* The password show/hide toggle is a *trailing* control, so in RTL it must
+   move to the LEFT edge instead — it should never share a side with the
+   leading icon above, or the two icons overlap. */
+html[dir="rtl"] .password-toggle {
+    left: 12px;
+    right: auto;
+}
+
+html[dir="rtl"] .form-input {
+    padding-left: 14px;
+    padding-right: 44px;
+}
+
+/* Password inputs need breathing room on BOTH sides in RTL: right side for
+   the leading lock icon, left side for the eye toggle button. */
 html[dir="rtl"] .password-wrapper .password-input {
-    padding-inline-start: 14px;
-    padding-inline-end: 44px;
+    padding-left: 44px;
+    padding-right: 44px;
 }
 
 html[dir="rtl"] .nav-link,

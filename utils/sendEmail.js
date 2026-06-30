@@ -1,12 +1,5 @@
 require('dns').setDefaultResultOrder('ipv4first');
-const dns = require('dns').promises;
-const net = require('net');
 const nodemailer = require('nodemailer');
-
-// Disable Happy Eyeballs globally for this process
-if (typeof net.setDefaultAutoSelectFamily === 'function') {
-  net.setDefaultAutoSelectFamily(false);
-}
 
 function buildOtpEmailHtml(name, otp) {
   return `
@@ -24,40 +17,47 @@ function buildOtpEmailHtml(name, otp) {
 }
 
 const sendEmail = async (options) => {
-  let smtpHost = 'smtp.gmail.com';
   try {
-    const addresses = await dns.resolve4('smtp.gmail.com');
-    if (addresses.length) {
-      smtpHost = addresses[0];
+    console.log('[Email] Attempting to send email to:', options.email);
+    console.log('[Email] Using EMAIL_USERNAME:', process.env.EMAIL_USERNAME ? '***' + process.env.EMAIL_USERNAME.slice(-4) : 'NOT_SET');
+    
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      family: 4
+    });
+
+    const mailOptions = {
+      from: `"PlantCare" <${process.env.EMAIL_USERNAME}>`,
+      to: options.email,
+      subject: options.subject,
+      html: options.message,
+    };
+
+    console.log('[Email] Sending email via Gmail SMTP...');
+    const info = await transporter.sendMail(mailOptions);
+    console.log('[Email] Email sent successfully. Message ID:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('[Email] FAILED to send email:');
+    console.error('[Email] Error code:', error.code);
+    console.error('[Email] Error message:', error.message);
+    if (error.response) {
+      console.error('[Email] SMTP response:', error.response);
     }
-  } catch (e) {
-    console.warn('[Email] IPv4 DNS resolve failed, falling back to hostname:', e.message);
+    if (error.command) {
+      console.error('[Email] Failed command:', error.command);
+    }
+    throw error;
   }
-
-  const transporter = nodemailer.createTransport({
-    host: smtpHost,
-    port: 465,
-    secure: true,
-    family: 4,
-    autoSelectFamily: false,
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-    tls: {
-      rejectUnauthorized: false,
-      servername: 'smtp.gmail.com',
-    },
-  });
-
-  const mailOptions = {
-    from: '"PlantCare" <' + process.env.EMAIL_USERNAME + '>',
-    to: options.email,
-    subject: options.subject,
-    html: options.message,
-  };
-
-  await transporter.sendMail(mailOptions);
 };
 
 module.exports = sendEmail;
