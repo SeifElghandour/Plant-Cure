@@ -24,7 +24,7 @@ const allowedOrigins = [
   'http://127.0.0.1:5500',
   'http://localhost:8080',
   'http://127.0.0.1:8080',
-  'https://doctor-plant-ai.vercel.app',
+  'https://plant-cure.vercel.app',
   'null',
 ];
 
@@ -50,7 +50,7 @@ app.use('/api/users', require('./routes/authRoutes'));
 app.use('/api/scans', require('./routes/scanRoutes'));
 
 app.get('/', (_req, res) => {
-  res.send('Plant Scan AI - Backend API is running...');
+  res.send('Plant Cure - Backend API is running...');
 });
 
 app.use((err, req, res, next) => {
