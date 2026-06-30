@@ -1,2 +1,1 @@
-# Doctor-Plant-AI
-
+# Plant-Cure
