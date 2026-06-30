@@ -39,7 +39,7 @@ async function callAiService(filePath, originalName, mimeType) {
     contentType: mimeType || 'image/jpeg',
   });
 
-  const aiResponse = await axios.post(AI_SERVICE_URL, formData, {
+  const aiResponse = await axios.post(`${AI_SERVICE_URL}/predict`, formData, {
     headers: formData.getHeaders(),
     timeout: 60000,
     maxContentLength: Infinity,

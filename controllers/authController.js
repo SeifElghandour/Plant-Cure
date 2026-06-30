@@ -20,7 +20,7 @@ async function assignAndSendOtp(user) {
 
   await sendEmail({
     email: user.email,
-    subject: 'Your Doctor Plant AI verification code',
+    subject: 'Your Plant Cure verification code',
     message: buildOtpEmailHtml(user.name, otp),
   });
 }
