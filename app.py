@@ -114,7 +114,7 @@ def prepare_image(image_bytes, target_size=(224, 224)):
     img = Image.open(io.BytesIO(image_bytes))
     if img.mode != "RGB":
         img = img.convert("RGB")
-    img = img.resize(target_size)
+    img = img.resize(target_size, Image.LANCZOS)
     img_array = np.array(img).astype("float32") / 255.0
     return np.expand_dims(img_array, axis=0)
 
@@ -144,11 +144,17 @@ def predict():
             return jsonify({"error": "Uploaded image is empty."}), 400
 
         if model is None:
+            print("ERROR: Model not loaded, returning mock prediction")
             return jsonify({**MOCK_PREDICTION, "mock": True})
 
         processed_image = prepare_image(image_bytes)
+        print(f"Input tensor shape: {processed_image.shape}, dtype: {processed_image.dtype}, min: {processed_image.min():.3f}, max: {processed_image.max():.3f}")
+        
         raw_predictions = model.predict(processed_image, verbose=0)
+        print(f"Raw predictions shape: {raw_predictions.shape}, raw values: {raw_predictions[0][:5]}")
+        
         probabilities = tf.nn.softmax(raw_predictions[0]).numpy()
+        print(f"Softmax probabilities - min: {probabilities.min():.6f}, max: {probabilities.max():.6f}")
 
         class_idx = int(np.argmax(probabilities))
         confidence = float(probabilities[class_idx]) * 100
@@ -156,6 +162,8 @@ def predict():
 
         print("-" * 30)
         print(f"Predicted: {predicted_class} ({confidence:.2f}%)")
+        print(f"Top 3 indices: {np.argsort(probabilities)[-3:][::-1]}")
+        print(f"Top 3 probs: {sorted(probabilities)[-3:][::-1]}")
         print("-" * 30)
 
         return jsonify(
@@ -167,6 +175,8 @@ def predict():
         )
     except Exception as exc:
         print(f"Prediction error: {exc}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"error": str(exc)}), 500
 
 
