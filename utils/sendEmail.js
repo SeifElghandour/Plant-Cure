@@ -1,4 +1,11 @@
 const { Resend } = require('resend');
+
+// Check for API key at module load time
+if (!process.env.RESEND_API_KEY) {
+  console.error("CRITICAL: RESEND_API_KEY is not defined in the environment variables!");
+  console.error("Email sending will fail. Please add RESEND_API_KEY to your environment variables.");
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 function buildOtpEmailHtml(name, otp) {
