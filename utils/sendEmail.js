@@ -21,6 +21,7 @@ const sendEmail = async (options) => {
     console.log('[Email] Attempting to send email to:', options.email);
     console.log('[Email] Using EMAIL_USERNAME:', process.env.EMAIL_USERNAME ? '***' + process.env.EMAIL_USERNAME.slice(-4) : 'NOT_SET');
     
+    // The ultimate configuration for Render network issues
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -30,31 +31,29 @@ const sendEmail = async (options) => {
         pass: process.env.EMAIL_PASSWORD,
       },
       tls: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, // Prevents certificate verification issues
       },
-      family: 4
+      family: 4 // Forces IPv4
     });
 
     const mailOptions = {
-      from: `"PlantCare" <${process.env.EMAIL_USERNAME}>`,
+      from: `"PlantCare Support" <${process.env.EMAIL_USERNAME}>`,
       to: options.email,
       subject: options.subject,
-      html: options.message,
+      html: options.message, 
     };
 
     console.log('[Email] Sending email via Gmail SMTP...');
     const info = await transporter.sendMail(mailOptions);
     console.log('[Email] Email sent successfully. Message ID:', info.messageId);
     return info;
+
   } catch (error) {
     console.error('[Email] FAILED to send email:');
     console.error('[Email] Error code:', error.code);
     console.error('[Email] Error message:', error.message);
     if (error.response) {
       console.error('[Email] SMTP response:', error.response);
-    }
-    if (error.command) {
-      console.error('[Email] Failed command:', error.command);
     }
     throw error;
   }
