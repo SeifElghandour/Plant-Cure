@@ -9,14 +9,14 @@ const transporter = nodemailer.createTransport({
     port: 465,              // Secure port for SMTP
     secure: true,           // Use SSL
     auth: {
-        user: 'plant.care.support@gmail.com',
+        user: 'plantcare.support@gmail.com',
         pass: 'rckodcmltqkesfxg'
     }
 });
 
 // 3. Setup email content (HTML template)
 const mailOptions = {
-    from: 'plant.care.support@gmail.com',
+    from: 'plantcare.support@gmail.com',
     to: 'sifehap21@gmail.com',
     subject: 'PlantCare - Your Verification Code (OTP)',
     html: `
