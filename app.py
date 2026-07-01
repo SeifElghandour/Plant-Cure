@@ -57,6 +57,14 @@ for model_path in MODEL_CANDIDATES:
             compile=False,
         )
         print(f"Model loaded successfully from {model_path}")
+        print("=" * 50)
+        print("MODEL ARCHITECTURE SUMMARY:")
+        model.summary()
+        print("=" * 50)
+        print(f"Model input shape: {model.input_shape}")
+        print(f"Model output shape: {model.output_shape}")
+        print(f"Total parameters: {model.count_params():,}")
+        print("=" * 50)
         break
     except Exception as exc:
         print(f"Failed to load {model_path}: {exc}")
@@ -128,6 +136,63 @@ def health():
             "model_loaded": model is not None,
         }
     )
+
+
+@app.route("/test-isolation", methods=["GET"])
+def test_isolation():
+    """
+    ISOLATION TEST: Uses a synthetic image to verify if model actually processes input.
+    If this returns the same prediction as real images, the model is corrupted/hardcoded.
+    """
+    if model is None:
+        return jsonify({"error": "Model not loaded"}), 500
+
+    try:
+        # Create a synthetic image: solid green (224x224 RGB)
+        # This should NOT be predicted as "Tomato Early Blight" if model works correctly
+        synthetic_image = np.zeros((224, 224, 3), dtype=np.uint8)
+        synthetic_image[:, :, 1] = 255  # Pure green channel
+        
+        # Convert to bytes
+        img = Image.fromarray(synthetic_image)
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='JPEG')
+        img_bytes.seek(0)
+        
+        # Process and predict
+        processed_image = prepare_image(img_bytes.read())
+        print("[ISOLATION TEST] Synthetic green image loaded")
+        print(f"[ISOLATION TEST] Input shape: {processed_image.shape}, mean: {processed_image.mean():.3f}")
+        
+        raw_predictions = model.predict(processed_image, verbose=0)
+        probabilities = tf.nn.softmax(raw_predictions[0]).numpy()
+        
+        class_idx = int(np.argmax(probabilities))
+        confidence = float(probabilities[class_idx]) * 100
+        predicted_class = CLASSES[class_idx]
+        
+        print("[ISOLATION TEST] Prediction:", predicted_class, f"({confidence:.2f}%)")
+        print("[ISOLATION TEST] Top 3 classes:", np.argsort(probabilities)[-3:][::-1])
+        
+        # Clean up
+        del processed_image
+        del raw_predictions
+        del probabilities
+        gc.collect()
+        
+        return jsonify({
+            "test_type": "synthetic_green_image",
+            "predicted_class": predicted_class,
+            "confidence": round(confidence, 2),
+            "top_3_indices": np.argsort(probabilities)[-3:][::-1].tolist(),
+            "top_3_probabilities": sorted(probabilities)[-3:][::-1].tolist(),
+            "note": "If this is 'Tomato___Early_blight', model is likely corrupted/hardcoded"
+        })
+    except Exception as exc:
+        print(f"[ISOLATION TEST] Error: {exc}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": str(exc)}), 500
 
 
 @app.route("/predict", methods=["POST"])
