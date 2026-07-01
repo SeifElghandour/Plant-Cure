@@ -1,5 +1,6 @@
 import io
 import os
+import gc
 
 import numpy as np
 import tensorflow as tf
@@ -165,6 +166,12 @@ def predict():
         print(f"Top 3 indices: {np.argsort(probabilities)[-3:][::-1]}")
         print(f"Top 3 probs: {sorted(probabilities)[-3:][::-1]}")
         print("-" * 30)
+
+        # Clean up tensors to free memory
+        del processed_image
+        del raw_predictions
+        del probabilities
+        gc.collect()
 
         return jsonify(
             {

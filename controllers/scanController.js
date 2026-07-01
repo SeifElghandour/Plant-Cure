@@ -143,6 +143,9 @@ function handlePipelineError(error, res) {
 // @route   POST /api/scans/analyze
 // @access  Public
 const analyzeScan = asyncHandler(async (req, res) => {
+  const memStart = process.memoryUsage();
+  console.log('[Memory] Start of analyzeScan - Heap Used:', Math.round(memStart.heapUsed / 1024 / 1024), 'MB');
+
   if (!req.file) {
     res.status(400);
     throw new Error('Please upload an image file');
@@ -210,6 +213,8 @@ const analyzeScan = asyncHandler(async (req, res) => {
     handlePipelineError(error, res);
   } finally {
     cleanupUploadedFile(filePath);
+    const memEnd = process.memoryUsage();
+    console.log('[Memory] End of analyzeScan - Heap Used:', Math.round(memEnd.heapUsed / 1024 / 1024), 'MB', 'Delta:', Math.round((memEnd.heapUsed - memStart.heapUsed) / 1024 / 1024), 'MB');
   }
 });
 
@@ -217,6 +222,9 @@ const analyzeScan = asyncHandler(async (req, res) => {
 // @route   POST /api/scans
 // @access  Private
 const uploadScan = asyncHandler(async (req, res) => {
+  const memStart = process.memoryUsage();
+  console.log('[Memory] Start of uploadScan - Heap Used:', Math.round(memStart.heapUsed / 1024 / 1024), 'MB');
+
   if (!req.file) {
     res.status(400);
     throw new Error('Please upload an image file');
@@ -253,6 +261,8 @@ const uploadScan = asyncHandler(async (req, res) => {
     handlePipelineError(error, res);
   } finally {
     cleanupUploadedFile(filePath);
+    const memEnd = process.memoryUsage();
+    console.log('[Memory] End of uploadScan - Heap Used:', Math.round(memEnd.heapUsed / 1024 / 1024), 'MB', 'Delta:', Math.round((memEnd.heapUsed - memStart.heapUsed) / 1024 / 1024), 'MB');
   }
 });
 
