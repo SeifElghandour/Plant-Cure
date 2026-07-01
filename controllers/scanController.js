@@ -39,6 +39,11 @@ async function callAiService(filePath, originalName, mimeType) {
     contentType: mimeType || 'image/jpeg',
   });
 
+  console.log('[AI Service] Sending request to:', `${AI_SERVICE_URL}/predict`);
+  console.log('[AI Service] File path:', filePath);
+  console.log('[AI Service] Original name:', originalName);
+  console.log('[AI Service] MIME type:', mimeType);
+
   const aiResponse = await axios.post(`${AI_SERVICE_URL}/predict`, formData, {
     headers: formData.getHeaders(),
     timeout: 60000,
@@ -46,12 +51,18 @@ async function callAiService(filePath, originalName, mimeType) {
     maxBodyLength: Infinity,
   });
 
+  console.log('[AI Service] Raw response data:', JSON.stringify(aiResponse.data, null, 2));
+
   const predictedClass =
     aiResponse.data.predicted_class ||
     aiResponse.data.disease ||
     aiResponse.data.result;
 
   const confidence = parseConfidence(aiResponse.data.confidence);
+
+  console.log('[AI Service] Extracted predictedClass:', predictedClass);
+  console.log('[AI Service] Extracted confidence:', confidence);
+  console.log('[AI Service] Is mock response:', aiResponse.data.mock === true);
 
   if (!predictedClass) {
     const error = new Error('AI service did not return a predicted class.');
@@ -70,7 +81,16 @@ async function callAiService(filePath, originalName, mimeType) {
 
 async function lookupDiseaseInfo(predictedClass) {
   const dbName = mapPredictedClassToDbName(predictedClass);
+  
+  console.log('[Disease Mapper] Input predictedClass:', predictedClass);
+  console.log('[Disease Mapper] Mapped dbName:', dbName);
+  
   const diseaseInfo = dbName ? await Disease.findOne({ name: dbName }) : null;
+  
+  console.log('[Disease Mapper] Found diseaseInfo:', diseaseInfo ? 'YES' : 'NO');
+  if (diseaseInfo) {
+    console.log('[Disease Mapper] Disease name in DB:', diseaseInfo.name);
+  }
 
   return {
     dbName,

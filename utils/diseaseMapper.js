@@ -30,7 +30,7 @@ const AI_CLASS_TO_DB_NAME = {
   Squash___Powdery_mildew: 'Healthy',
   Strawberry___Leaf_scorch: 'Strawberry_Leaf_Scorch',
   'Strawberry___healthy': 'Healthy',
-  Tomato___Bacterial_spot: 'Tomato_Early_Blight',
+  Tomato___Bacterial_spot: 'Tomato_Bacterial_Spot',
   Tomato___Early_blight: 'Tomato_Early_Blight',
   Tomato___Late_blight: 'Tomato_Late_Blight',
   Tomato___Leaf_Mold: 'Tomato_Leaf_Mold',

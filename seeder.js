@@ -115,6 +115,12 @@ const diseasesData = [
 
   // --- Tomato ---
   {
+    name: 'Tomato_Bacterial_Spot',
+    symptoms: 'Small, water-soaked spots on leaves and fruit that turn brown or black.',
+    treatment: 'Apply copper-based sprays or bactericides.',
+    prevention: 'Use disease-free seeds, avoid overhead irrigation, and rotate crops.'
+  },
+  {
     name: 'Tomato_Early_Blight',
     symptoms: "Brown spots with 'target' concentric rings on leaves.",
     treatment: 'Apply Mancozeb or copper sprays; remove infected leaves.',
